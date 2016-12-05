@@ -8,3 +8,9 @@ class LoginView(generic.TemplateView):
 
 class TopView(generic.TemplateView):
     template_name = 'I002_top.html'
+
+class AccountView(generic.TemplateView):
+    template_name = 'I003_account.html'
+
+class ArtistDetailView(generic.TemplateView):
+    template_name = 'I005_detail.html'
