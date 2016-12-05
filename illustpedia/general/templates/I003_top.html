@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>トップ画面</title>
+</head>
+<body>
+    <h1>I002_トップ画面</h1>
+
+    [ログインユーザ情報]------------------<br>
+    +{{user.username}}<br>
+    +{{user.email}}<br>
+    ---------------------------------------------<br>
+    <a href="{% url 'general:logout' %}">ログアウト</a>
+</body>
+</html>
