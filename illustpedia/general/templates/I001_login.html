@@ -7,5 +7,14 @@
 <body>
     <h1>I001_ログイン画面</h1>
 
+    <form action="{% url 'general:login' %}" method="post">
+        {% csrf_token %}
+
+        ユーザID:<input type="text" name="username" /><br>
+        パスワード:<input type="password" name="password" />
+
+        <button type="submit" class="form-button">ログイン</button>
+    </form>
+
 </body>
 </html>
