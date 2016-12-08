@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import IPUser
-from .models import Artist
+from .models import IPUser, Artist
+# from .models import Tag
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -22,3 +22,11 @@ class ArtistAdmin(admin.ModelAdmin):
         ('tags', {'fields': ['tags']}),
     ]
 admin.site.register(Artist, ArtistAdmin)
+
+
+# class TagAdmin(admin.ModelAdmin):
+#     fieldsets = [
+#         ('tag_name', {'fields': ['tag_name']}),
+#         ('tag_num', {'fields': ['tag_num']}),
+#     ]
+# admin.site.register(Tag, TagAdmin)

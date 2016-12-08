@@ -34,5 +34,11 @@
     {% for artist in artist_list %}
         <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
     {% endfor %}
+
+    <HR>
+    登録されたタグ一覧<br>
+    {% for tag in all_tag_list %}
+        <li><a href="{% url 'general:tag_search' tag.id %}">{{ tag }}</a></li>
+    {% endfor %}
 </body>
 </html>

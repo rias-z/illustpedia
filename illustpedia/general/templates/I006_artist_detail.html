@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>（作者の名前）のページ</title>
+    <title>{{ artist.artist_name }}のページ</title>
 </head>
 <body>
 
-    <h1>I005_作者ページ作成画面</h1>
-    {{ artist }}
+    <h1>I006_作者ページ詳細画面</h1>
     作者のpixivID: {{ artist.artist_id }}<br>
     作者の名前: {{ artist.artist_name }}<br>
     作者のアイコン画像: （未実装）<br>
@@ -15,7 +14,7 @@
         http://www.pixiv.net/member.php?id={{ artist.artist_id }}</a><br>
     作者タグ:
     {% for tag in tag_list %}
-        <li>{{ tag }}</li>
+        <li><a href="{% url 'general:tag_search' tag.id %}">{{ tag }}</a></li>
     {% endfor %}
 
 </body>

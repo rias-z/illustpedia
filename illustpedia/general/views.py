@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import IPUser, Artist
+from taggit.models import Tag
 
 
 # form
@@ -60,6 +61,7 @@ class TopView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TopView, self).get_context_data(**kwargs)
         context['artist_list'] = Artist.objects.all()
+        context['all_tag_list'] = Tag.objects.all()
         return context
 
 
@@ -69,7 +71,7 @@ class AccountView(generic.TemplateView):
 
 class ArtistDetailView(generic.DetailView):
     template_name = 'I006_artist_detail.html'
-    model = Artist
+    model = Artist, Tag
 
     def get_queryset(self):
         self.queryset = Artist.objects.all()
@@ -79,5 +81,20 @@ class ArtistDetailView(generic.DetailView):
         context = super(ArtistDetailView, self).get_context_data(**kwargs)
         context['artist'] = self.get_object()
         context['tag_list'] = self.get_object().tags.all()
+        return context
+
+
+class TagSearchView(generic.DetailView):
+    template_name = 'I008_tag_search.html'
+    model = Tag, Artist
+
+    def get_queryset(self):
+        self.queryset = Tag.objects.all()
+        return super(TagSearchView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(TagSearchView, self).get_context_data(**kwargs)
+        context['tag'] = self.get_object()
+        context['artist_list'] = Artist.objects.filter(tags__name__in=[self.get_object()])
         return context
 
