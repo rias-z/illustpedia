@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^account_create', views.AccountCreateView.as_view(), name="account_create"),
     url(r'^top', views.TopView.as_view(), name="top"),
     url(r'^account', views.AccountView.as_view(), name="account"),
-    url(r'^detail', views.ArtistDetailView.as_view(), name="artist_detail"),
+    url(r'^detail/(?P<pk>[0-9]+)/$', views.ArtistDetailView.as_view(), name="artist_detail"),
 ]

@@ -67,5 +67,17 @@ class AccountView(generic.TemplateView):
     template_name = 'I004_account.html'
 
 
-class ArtistDetailView(generic.TemplateView):
-    template_name = 'I005_artist_create.html'
+class ArtistDetailView(generic.DetailView):
+    template_name = 'I006_artist_detail.html'
+    model = Artist
+
+    def get_queryset(self):
+        self.queryset = Artist.objects.all()
+        return super(ArtistDetailView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(ArtistDetailView, self).get_context_data(**kwargs)
+        context['artist'] = self.get_object()
+        context['tag_list'] = self.get_object().tags.all()
+        return context
+

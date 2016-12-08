@@ -32,7 +32,7 @@
     <HR>
     登録された作者<br>
     {% for artist in artist_list %}
-        <li>{{ artist.artist_name }}</li>
+        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
     {% endfor %}
 </body>
 </html>
