@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
+from taggit.managers import TaggableManager
 
 
 class AuthUserManager(BaseUserManager):
@@ -54,3 +55,15 @@ class IPUser(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
         return True
+
+
+class Artist(models.Model):
+    artist_id = models.IntegerField("作者ID", unique=True)
+    artist_name = models.CharField("作者の名前", max_length=30)
+    # 作者のアイコン画像
+    # artist_icon
+    tags = TaggableManager()
+
+    def __str__(self):
+        return self.artist_name
+

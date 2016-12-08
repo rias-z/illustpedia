@@ -7,5 +7,17 @@
 <body>
     <h1>I003_アカウント画面</h1>
 
+    [現在のログインユーザ情報]------------------<br>
+    +{{user.username}}<br>
+    +{{user.email}}<br>
+    <a href="{% url 'general:logout' %}">ログアウト</a>
+    <br>---------------------------------------------<br>
+    <HR><br>
+
+    お気に入り作者一覧<br>
+    アカウントを編集<br>
+    アカウントを削除<br>
+    <input type="button" value="戻る" onClick="history.back()">
+
 </body>
 </html>

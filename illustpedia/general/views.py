@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import IPUser
+from .models import IPUser, Artist
 
 
 # form
@@ -57,10 +57,15 @@ class AccountCreateView(generic.CreateView):
 class TopView(generic.TemplateView):
     template_name = 'I003_top.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(TopView, self).get_context_data(**kwargs)
+        context['artist_list'] = Artist.objects.all()
+        return context
+
 
 class AccountView(generic.TemplateView):
     template_name = 'I004_account.html'
 
 
 class ArtistDetailView(generic.TemplateView):
-    template_name = 'I005_artist_detail.html'
+    template_name = 'I005_artist_create.html'
