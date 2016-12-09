@@ -7,10 +7,53 @@
 <body>
     <h1>I002_トップ画面</h1>
 
-    [ログインユーザ情報]------------------<br>
+    [現在のログインユーザ情報]------------------<br>
     +{{user.username}}<br>
     +{{user.email}}<br>
-    ---------------------------------------------<br>
     <a href="{% url 'general:logout' %}">ログアウト</a>
+    <br>---------------------------------------------<br>
+    <HR><br>
+
+    ユーザ機能<br>
+    <ul>
+        <li>（推薦機能１）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
+        <li>（推薦機能２）タグ検索する（ユーザのファボ一覧から推薦検索）<li>
+
+        <form action="{% url 'general:tag_search' %}" method="post">
+
+            すべて検索<br>
+            自分のファボ一覧から推薦検索<br>
+            他のユーザのファボ一覧から推薦検索<br>
+            <table>
+                {% csrf_token %}
+                <input type="text" name="tags" maxlength="100" />
+{#                {{ form }}#}
+            </table>
+
+            <button type="submit" class="form-button">タグ検索</button>
+        </form>
+
+        <li><a href="{% url 'general:account' %}">アカウントページ（お気に入り作者一覧もここ）</a></li>
+        <li><a href="{% url 'general:artist_create' %}">作者ページを新規追加（手動）</a></li>
+    </ul>
+
+    サーバ管理者機能<br>
+    <ul>
+        <li>作者ページを新規追加（自動　自分のpixivフォロワーから）</li>
+        <li>作者ページを新規追加（自動　ランキングから）</li>
+        <li>作者ページ一覧</li>
+    </ul>
+
+    <HR>
+    登録された作者<br>
+    {% for artist in artist_list %}
+        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
+    {% endfor %}
+
+    <HR>
+    登録されたタグ一覧<br>
+{#    {% for tag in all_tag_list %}#}
+{#        <li><a href="{% url 'general:tag_search' tag.id %}">{{ tag }}</a></li>#}
+{#    {% endfor %}#}
 </body>
 </html>
