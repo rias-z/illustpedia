@@ -7,15 +7,16 @@
 <body>
     <h1>I008_タグ検索画面</h1>
 
-    [タグ検索]--------------------------------<br>
-    +ID: {{ tag.id }}<br>
-    +tag: {{ tag.name }}<br>
-    ---------------------------------------------<br>
-    <HR><br>
-
-    {% for artist in artist_list %}
-        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
-    {% endfor %}
+{##仮一時撤退#}
+{#    [タグ検索]--------------------------------<br>#}
+{#    +ID: {{ tag.id }}<br>#}
+{#    +tag: {{ tag.name }}<br>#}
+{#    ---------------------------------------------<br>#}
+{#    <HR><br>#}
+{##}
+{#    {% for artist in artist_list %}#}
+{#        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>#}
+{#    {% endfor %}#}
 
 </body>
 </html>

@@ -53,6 +53,8 @@ class AccountCreateView(generic.CreateView):
         obj = AccountCreateForm(request.POST).save(commit=False)
         obj.created_by = self.request.user
         obj.save()
+
+        # ユーザを作成してログイン処理し、トップに遷移する　一時退避
         # user = authenticate(username=cleaned_data['username'],
         #                     password=cleaned_data['password1'])
         # login(self.request, user)
@@ -74,10 +76,6 @@ class TopView(generic.TemplateView):
 
 class AccountView(generic.TemplateView):
     template_name = 'I004_account.html'
-
-    # def get_queryset(self):
-    #     self.queryset = IPUser.objects.all()
-    #     return super(AccountView, self).get_queryset()
 
     def get_context_data(self, **kwargs):
         context = super(AccountView, self).get_context_data(**kwargs)
@@ -112,7 +110,6 @@ class ArtistDetailView(generic.DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print("post")
         artist_list = self.request.user.fav_artist
         artist_list.add(self.get_object())
         return redirect("general:artist_detail", pk=self.kwargs.get("pk"))
@@ -122,13 +119,22 @@ class TagSearchView(generic.DetailView):
     template_name = 'I008_tag_search.html'
     model = Tag, Artist
 
-    def get_queryset(self):
-        self.queryset = Tag.objects.all()
-        return super(TagSearchView, self).get_queryset()
+    def post(self, request, *args, **kwargs):
+        search_tags = request.POST.get('tags').split(",")
+        print(search_tags)
+        return redirect('general:tag_search')
 
-    def get_context_data(self, **kwargs):
-        context = super(TagSearchView, self).get_context_data(**kwargs)
-        context['tag'] = self.get_object()
-        context['artist_list'] = Artist.objects.filter(tags__name__in=[self.get_object()])
-        return context
+# class TagSearchView(generic.DetailView):
+#     template_name = 'I008_tag_search.html'
+#     model = Tag, Artist
+#
+#     def get_queryset(self):
+#         self.queryset = Tag.objects.all()
+#         return super(TagSearchView, self).get_queryset()
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(TagSearchView, self).get_context_data(**kwargs)
+#         context['tag'] = self.get_object()
+#         context['artist_list'] = Artist.objects.filter(tags__name__in=[self.get_object()])
+#         return context
 
