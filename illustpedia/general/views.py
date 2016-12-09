@@ -9,13 +9,20 @@ from .models import IPUser, Artist
 from taggit.models import Tag
 
 
-# form
+# Form
 class AccountCreateForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = IPUser
         fields = ("username", "nickname", "email")
 
 
+class ArtistCreateForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ("artist_id", "artist_name", "tags")
+
+
+# View
 class IndexView(generic.TemplateView):
     template_name = 'I000_index.html'
 
@@ -67,6 +74,14 @@ class TopView(generic.TemplateView):
 
 class AccountView(generic.TemplateView):
     template_name = 'I004_account.html'
+
+
+class ArtistCreateView(generic.CreateView):
+    template_name = 'I005_artist_create.html'
+    form_class = ArtistCreateForm
+
+    def get_success_url(self):
+        return reverse('general:artist_detail', args=[self.object.id])
 
 
 class ArtistDetailView(generic.DetailView):
