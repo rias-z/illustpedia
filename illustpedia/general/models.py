@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
+from taggit.managers import TaggableManager
 
 
 class AuthUserManager(BaseUserManager):
@@ -25,10 +26,26 @@ class AuthUserManager(BaseUserManager):
         user.save(using=self._db)
 
 
+class Artist(models.Model):
+    artist_id = models.IntegerField("作者ID", unique=True)
+    artist_name = models.CharField("作者の名前", max_length=30)
+    # 作者のアイコン画像
+    # artist_icon
+    # taggitを一時撤退
+    tags = TaggableManager()
+
+    # とりあえずtaggitで対応
+    # tags = models.ManyToManyField(Tag, related_name='tags')
+
+    def __str__(self):
+        return self.artist_name
+
+
 class IPUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField("ユーザID", unique=True, max_length=30)
     nickname = models.CharField("ニックネーム", max_length=30)
     email = models.EmailField(unique=True)
+    fav_artist = models.ManyToManyField(Artist)
 
     date_joined = models.DateTimeField(auto_now_add=True)
     is_staff = models.BooleanField(default=False, null=False)
@@ -54,3 +71,12 @@ class IPUser(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
         return True
+
+
+# class Tag(models.Model):
+#     tag_name = models.CharField("タグの名前", max_length=30)
+#     tag_num = models.IntegerField("作者につけられたタグの数")
+#
+#     def __str__(self):
+#         return self.tag_name
+
