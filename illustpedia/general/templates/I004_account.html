@@ -15,6 +15,9 @@
     <HR><br>
 
     お気に入り作者一覧<br>
+    {% for artist in artist_list %}
+        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
+    {% endfor %}
     アカウントを編集<br>
     アカウントを削除<br>
     <input type="button" value="戻る" onClick="history.back()">

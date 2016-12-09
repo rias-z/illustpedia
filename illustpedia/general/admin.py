@@ -11,6 +11,7 @@ class UserAdmin(admin.ModelAdmin):
         ('password', {'fields': ['password']}),
         ('is_active', {'fields': ['is_active']}),
         ('is_staff', {'fields': ['is_staff']}),
+        ('fav_artist', {'fields': ['fav_artist']}),
     ]
 admin.site.register(IPUser, UserAdmin)
 

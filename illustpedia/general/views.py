@@ -75,6 +75,15 @@ class TopView(generic.TemplateView):
 class AccountView(generic.TemplateView):
     template_name = 'I004_account.html'
 
+    # def get_queryset(self):
+    #     self.queryset = IPUser.objects.all()
+    #     return super(AccountView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(AccountView, self).get_context_data(**kwargs)
+        context['artist_list'] = self.request.user.fav_artist.all()
+        return context
+
 
 class ArtistCreateView(generic.CreateView):
     template_name = 'I005_artist_create.html'
