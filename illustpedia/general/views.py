@@ -105,7 +105,17 @@ class ArtistDetailView(generic.DetailView):
         context = super(ArtistDetailView, self).get_context_data(**kwargs)
         context['artist'] = self.get_object()
         context['tag_list'] = self.get_object().tags.all()
+        flag_fav = False
+        if self.request.user.fav_artist.all().filter(artist_id=self.get_object().artist_id):
+            flag_fav = True
+        context['flag_fav'] = flag_fav
         return context
+
+    def post(self, request, *args, **kwargs):
+        print("post")
+        artist_list = self.request.user.fav_artist
+        artist_list.add(self.get_object())
+        return redirect("general:artist_detail", pk=self.kwargs.get("pk"))
 
 
 class TagSearchView(generic.DetailView):

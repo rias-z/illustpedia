@@ -16,6 +16,17 @@
     {% for tag in tag_list %}
         <li><a href="{% url 'general:tag_search' tag.id %}">{{ tag }}</a></li>
     {% endfor %}
+    {% if flag_fav %}
+        [フォロー中]
+    {% else %}
+        <form action="{% url 'general:artist_detail' artist.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="フォローする" />
+        </form>
+{#        <input type="button" value="フォローする" method="post" onClick="{% url 'general:artist_detail' artist.id %}" />#}
+    {% endif %}
+
+    <br><input type="button" value="戻る" onClick="history.back()">
 
 </body>
 </html>
