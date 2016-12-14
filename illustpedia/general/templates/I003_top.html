@@ -17,6 +17,10 @@
     ユーザ機能<br>
     <ul>
         <li>（推薦機能１）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
+            {% for artist in dict_sort_artist_list_order_non_follow %}
+                <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
+            {% endfor %}
+
         <li>（推薦機能２）タグ検索する（ユーザのファボ一覧から推薦検索）<li>
 
         <form action="{% url 'general:top' %}" method="post">
