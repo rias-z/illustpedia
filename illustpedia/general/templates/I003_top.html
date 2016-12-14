@@ -21,13 +21,13 @@
                 <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
             {% endfor %}
 
-        <li>（推薦機能２）タグ検索する（ユーザのファボ一覧から推薦検索）<li>
-
+        <br>
+        <li>（推薦機能２）タグ検索する（ユーザのファボ一覧から推薦検索）</li>
         <form action="{% url 'general:top' %}" method="post">
 
-            すべて検索<br>
-            自分のファボ一覧から推薦検索<br>
-            他のユーザのファボ一覧から推薦検索<br>
+            ---1)すべて検索（実装済み）<br>
+            ---2)自分のファボ一覧から推薦検索（実装済み）<br>
+            ---3)他のユーザのファボ一覧から推薦検索<br>
             {#                <input type="text" name="tags" maxlength="100" />#}
             <table>
                 {% csrf_token %}
