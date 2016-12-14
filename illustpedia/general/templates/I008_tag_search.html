@@ -7,16 +7,47 @@
 <body>
     <h1>I008_タグ検索画面</h1>
 
-{##仮一時撤退#}
-{#    [タグ検索]--------------------------------<br>#}
-{#    +ID: {{ tag.id }}<br>#}
-{#    +tag: {{ tag.name }}<br>#}
-{#    ---------------------------------------------<br>#}
-{#    <HR><br>#}
-{##}
-{#    {% for artist in artist_list %}#}
-{#        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>#}
+    <HR>
+    dict_sort_artist_list_order（　あなたへのおすすめリスト　）<br>
+    {% for artist in dict_sort_artist_list_order %}
+        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
+    {% endfor %}
+
+    <HR>
+    dict_sort_tag_list_order（　ユーザのフォローしている作者の作者タグを総計し、数が多い上位５つのタグ　）<br>
+    タグ　合計数<br>
+    {% for list in dict_sort_tag_list_order %}
+        <li>[
+        {% for order in list %}
+            {{ order }},
+        {% endfor %}
+        ]</li>
+    {% endfor %}
+
+    <HR>
+    user_follow_artist_list（　あなたがフォローしている作者　）<br>
+    {% for artist in user_follow_artist_list %}
+        <li>{{ artist }}</li>
+    {% endfor %}
+
+    <HR>
+    dict_sort_artist_list_order（　あなたへのおすすめリスト（フォローしてない作者）　）<br>
+    {% for artist in dict_sort_artist_list_order_non_follow %}
+        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
+    {% endfor %}
+
+{#    <HR>#}
+{#    hit_tag_artist_list（　検索タグ = {{ tag_list }} でマッチした作者　）<br>#}
+{#    {% for artist in hit_tag_artist_list %}#}
+{#        <li>{{ artist }}</li>#}
 {#    {% endfor %}#}
 
+{#    <HR>#}
+{#    all_artist_list（すべての作者リスト）<br>#}
+{#    {% for artist in all_artist_list %}#}
+{#        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>#}
+{#    {% endfor %}#}
+    <HR>
+    <br><br><br>
 </body>
 </html>

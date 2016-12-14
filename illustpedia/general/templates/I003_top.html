@@ -19,15 +19,15 @@
         <li>（推薦機能１）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
         <li>（推薦機能２）タグ検索する（ユーザのファボ一覧から推薦検索）<li>
 
-        <form action="{% url 'general:tag_search' %}" method="post">
+        <form action="{% url 'general:top' %}" method="post">
 
             すべて検索<br>
             自分のファボ一覧から推薦検索<br>
             他のユーザのファボ一覧から推薦検索<br>
+            {#                <input type="text" name="tags" maxlength="100" />#}
             <table>
                 {% csrf_token %}
-                <input type="text" name="tags" maxlength="100" />
-{#                {{ form }}#}
+                {{ form }}
             </table>
 
             <button type="submit" class="form-button">タグ検索</button>

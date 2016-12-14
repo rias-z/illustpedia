@@ -29,13 +29,10 @@ class AuthUserManager(BaseUserManager):
 class Artist(models.Model):
     artist_id = models.IntegerField("作者ID", unique=True)
     artist_name = models.CharField("作者の名前", max_length=30)
-    # 作者のアイコン画像
-    # artist_icon
-    # taggitを一時撤退
+
     tags = TaggableManager()
 
-    # とりあえずtaggitで対応
-    # tags = models.ManyToManyField(Tag, related_name='tags')
+
 
     def __str__(self):
         return self.artist_name
