@@ -80,8 +80,55 @@ class TopView(generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super(TopView, self).get_context_data(**kwargs)
+
+        # あなたへのおすすめ一覧（フォローしていない作者１０人）
+
+
+        # タグとタグ数の辞書
+        dict_tag_and_count_list = {}
+
+        # ユーザのフォローしている作者
+        user_follow_artist_list = self.request.user.fav_artist.all()
+
+        # ユーザのフォローしている作者すべてから、タグを抽出
+        for artist in user_follow_artist_list:
+            all_artist_tag = artist.tags.all()
+            for tag in all_artist_tag:
+                if tag in dict_tag_and_count_list.keys():
+                    dict_tag_and_count_list[tag] += 1
+                else:
+                    dict_tag_and_count_list.update({tag: 1})
+
+        # タグを多い順にソートして5つだけにした辞書（優先作者タグ）
+        dict_sort_tag_list_order = OrderedDict(
+            sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True))
+
+        # ソートされたタグのリスト（優先作者タグリスト）
+        dict_sort_tag_list_order_keys = list(dict_sort_tag_list_order.keys())[:5]
+
+        # 優先作者タグリストからリサーチ
+        dict_artist_and_count_list = {}
+        for tag in dict_sort_tag_list_order_keys:
+            # （優先作者タグ）&&（検索タグにヒットした作者のリスト）
+            research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
+            for artist in research_tag_artist_list:
+                if artist in dict_artist_and_count_list:
+                    dict_artist_and_count_list[artist] += 1
+                else:
+                    dict_artist_and_count_list.update({artist: 1})
+
+        # 作者を降順にリスト化
+        dict_sort_artist_list_order = list(OrderedDict(sorted(dict_artist_and_count_list.items(),
+                                                              key=lambda x: x[1], reverse=True)).keys())
+
+        # フォローしていない作者リスト
+        dict_sort_artist_list_order_non_follow = copy.deepcopy(dict_sort_artist_list_order)
+        for artist in user_follow_artist_list:
+            dict_sort_artist_list_order_non_follow.remove(artist)
+
         context['artist_list'] = Artist.objects.all()
         context['all_tag_list'] = Tag.objects.all()
+        context['dict_sort_artist_list_order_non_follow'] = dict_sort_artist_list_order_non_follow[:10]
         return context
 
     def form_valid(self, form):
@@ -138,38 +185,12 @@ class TagSearchView(generic.TemplateView):
         context = super(TagSearchView, self).get_context_data(**kwargs)
         tag_list = kwargs.get('tag_list').split(',')
 
-        # artist_list_all = Artist.objects.all()
-        # dict_artist_and_count = {}
-        #
-        # for artist in artist_list_all:
-        #     dict_artist_and_count.update({artist: 0})
-        #
-        # for tag in tag_list:
-        #     artist_list = Artist.objects.filter(tags__name__in=[tag])
-        #
-        #     for artist in artist_list:
-        #         count = dict_artist_and_count[artist]
-        #         dict_artist_and_count[artist] = (count+1)
-        #
-        # sort_dict_artist_and_count = sorted(dict_artist_and_count.items(), key=lambda x: x[1], reverse=True)
-        #
-        # sort_dict_artist = []
-        # sort_dict_count = []
-        # for value in sort_dict_artist_and_count:
-        #     sort_dict_artist.append(value[0])
-        #     sort_dict_count.append(value[1])
-
-        #　===================
-        #
-        # ユーザのフォローしている作者の作者タグを順位付け
-
         # すべての作者のリスト
         all_artist_list = Artist.objects.all()
 
         # 検索タグにヒットした作者のリスト
         for tag in tag_list:
             hit_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
-        print(hit_tag_artist_list)
 
         # タグとタグ数の辞書
         dict_tag_and_count_list = {}
@@ -196,7 +217,6 @@ class TagSearchView(generic.TemplateView):
         # 優先作者タグリストからリサーチ
         dict_artist_and_count_list = {}
         for tag in dict_sort_tag_list_order_keys:
-            print(tag)
             # （優先作者タグ）&&（検索タグにヒットした作者のリスト）
             research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag]) & hit_tag_artist_list
             for artist in research_tag_artist_list:
