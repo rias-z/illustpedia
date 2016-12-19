@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^artist_create/$', views.ArtistCreateView.as_view(), name="artist_create"),
     # url(r'^tag_search/(?P<pk>[0-9]+)/$', views.TagSearchView.as_view(), name="tag_search"),
     url(r'^tag_search/tag=(?P<tag_list>[\w,]+)/$', views.TagSearchView.as_view(), name="tag_search"),
+    url(r'^auto_create/$', views.ArtistAutoCreateView.as_view(), name="auto_create"),
 ]

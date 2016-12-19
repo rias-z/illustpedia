@@ -11,10 +11,10 @@
     +{{user.username}}<br>
     +{{user.email}}<br>
     <a href="{% url 'general:logout' %}">ログアウト</a>
-    <br>---------------------------------------------<br>
+    <br>------------------------------------------------------<br>
     <HR><br>
 
-    ユーザ機能<br>
+    [ユーザ機能]<br>
     <ul>
         <li>（推薦機能１）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
             {% for artist in dict_sort_artist_list_order_non_follow %}
@@ -41,21 +41,21 @@
         <li><a href="{% url 'general:artist_create' %}">作者ページを新規追加（手動）</a></li>
     </ul>
 
-    サーバ管理者機能<br>
+    <HR>
+    [サーバ管理者機能]<br>
     <ul>
+        <li><a href="{% url 'general:auto_create' %}">作者ページを新規追加（自動　ランキングから）</a></li>
         <li>作者ページを新規追加（自動　自分のpixivフォロワーから）</li>
-        <li>作者ページを新規追加（自動　ランキングから）</li>
-        <li>作者ページ一覧</li>
     </ul>
 
     <HR>
-    登録された作者<br>
+    作者ページ一覧<br>
     {% for artist in artist_list %}
         <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
     {% endfor %}
 
-    <HR>
-    登録されたタグ一覧<br>
+{#    <HR>#}
+{#    登録されたタグ一覧<br>#}
 {#    {% for tag in all_tag_list %}#}
 {#        <li><a href="{% url 'general:tag_search' tag.id %}">{{ tag }}</a></li>#}
 {#    {% endfor %}#}
