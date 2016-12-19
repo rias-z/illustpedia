@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>I009_作者ページ作成画面（クローラ機能）</title>
+</head>
+<body>
+    <h1>I009_作者ページ作成画面（クローラ機能）</h1>
+    自動で作者ページを作成します。<br>
+
+    以下が今回作成された作者ページです。<br>
+
+    <ul>
+        {% for new_artist in new_artist_list %}
+            <li><a href="{% url 'general:artist_detail' new_artist.id %}">{{ new_artist }}</a></li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

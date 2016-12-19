@@ -1,6 +1,3 @@
-import copy
-from collections import OrderedDict
-
 from django.views import generic
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.forms import AuthenticationForm
@@ -10,7 +7,14 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import IPUser, Artist
 from taggit.models import Tag
-from itertools import chain
+import copy
+from collections import OrderedDict
+# import urllib.request
+from pixivpy3 import *
+import time
+import json
+from time import sleep
+import os
 
 
 # Form
@@ -82,15 +86,9 @@ class TopView(generic.FormView):
         context = super(TopView, self).get_context_data(**kwargs)
 
         # あなたへのおすすめ一覧（フォローしていない作者１０人）
-
-
-        # タグとタグ数の辞書
         dict_tag_and_count_list = {}
-
-        # ユーザのフォローしている作者
         user_follow_artist_list = self.request.user.fav_artist.all()
 
-        # ユーザのフォローしている作者すべてから、タグを抽出
         for artist in user_follow_artist_list:
             all_artist_tag = artist.tags.all()
             for tag in all_artist_tag:
@@ -99,17 +97,13 @@ class TopView(generic.FormView):
                 else:
                     dict_tag_and_count_list.update({tag: 1})
 
-        # タグを多い順にソートして5つだけにした辞書（優先作者タグ）
         dict_sort_tag_list_order = OrderedDict(
             sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True))
 
-        # ソートされたタグのリスト（優先作者タグリスト）
         dict_sort_tag_list_order_keys = list(dict_sort_tag_list_order.keys())[:5]
 
-        # 優先作者タグリストからリサーチ
         dict_artist_and_count_list = {}
         for tag in dict_sort_tag_list_order_keys:
-            # （優先作者タグ）&&（検索タグにヒットした作者のリスト）
             research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
             for artist in research_tag_artist_list:
                 if artist in dict_artist_and_count_list:
@@ -117,14 +111,14 @@ class TopView(generic.FormView):
                 else:
                     dict_artist_and_count_list.update({artist: 1})
 
-        # 作者を降順にリスト化
         dict_sort_artist_list_order = list(OrderedDict(sorted(dict_artist_and_count_list.items(),
                                                               key=lambda x: x[1], reverse=True)).keys())
 
-        # フォローしていない作者リスト
         dict_sort_artist_list_order_non_follow = copy.deepcopy(dict_sort_artist_list_order)
+
         for artist in user_follow_artist_list:
-            dict_sort_artist_list_order_non_follow.remove(artist)
+            if artist in dict_sort_artist_list_order_non_follow:
+                dict_sort_artist_list_order_non_follow.remove(artist)
 
         context['artist_list'] = Artist.objects.all()
         context['all_tag_list'] = Tag.objects.all()
@@ -132,8 +126,10 @@ class TopView(generic.FormView):
         return context
 
     def form_valid(self, form):
+        print("form_valid")
         tag_list = form.cleaned_data['tag_list']
         self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list})
+
         return super(TopView, self).form_valid(form)
 
 
@@ -232,7 +228,8 @@ class TagSearchView(generic.TemplateView):
         # フォローしていない作者リスト
         dict_sort_artist_list_order_non_follow = copy.deepcopy(dict_sort_artist_list_order)
         for artist in user_follow_artist_list:
-            dict_sort_artist_list_order_non_follow.remove(artist)
+            if artist in dict_sort_artist_list_order_non_follow:
+                dict_sort_artist_list_order_non_follow.remove(artist)
 
         context['all_artist_list'] = all_artist_list
         context['hit_tag_artist_list'] = hit_tag_artist_list
@@ -243,3 +240,70 @@ class TagSearchView(generic.TemplateView):
         return context
 
 
+class ArtistAutoCreateView(generic.TemplateView):
+    template_name = 'I009_create_from_ranking.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ArtistAutoCreateView, self).get_context_data(**kwargs)
+
+        # ログイン処理
+        api = PixivAPI()
+        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
+
+        artist_list = []        # すべての作者リスト
+        list_all_id = []        # すべての作者idのリスト
+        new_artist_list = []    # 新規作成された作者のリスト
+
+        for artist in Artist.objects.all():
+            list_all_id.append(artist.artist_id)
+
+        # pixivのデイリーランキングのjsonをクローラ
+        json_result = api.ranking_all('daily')
+        ranking = json_result.response[0]
+        for artist in ranking.works:
+            print("<%s>[%s] %s" % (artist.rank, artist.work.user.id, artist.work.user.name))
+            artist_list.append([artist.rank, artist.work.user.id, artist.work.user.name])
+
+        count = 0
+        for artist in artist_list:
+            flag_exist = False
+            for artist_id in list_all_id:
+                if artist[1] == artist_id:
+                    flag_exist = True
+                    break
+
+            if not flag_exist:
+                print("4 minutes wait...\n")
+                time.sleep(4)
+                print("[" + artist[2] + "]のページを作成中")
+
+                # それぞれのartistのページから、イラスト30個分のタグを数の多い順にソート、上位５つを仮作者タグにする
+                dict_tag = {}
+                json_artist_result = api.users_works(artist[1]).response
+                for illust in json_artist_result:
+                    for tag in illust.tags:
+                        if 'users' not in tag:
+                            if tag in dict_tag.keys():
+                                dict_tag[tag] += 1
+                            else:
+                                dict_tag.update({tag: 1})
+
+                dict_sort_tag = list(OrderedDict(sorted(dict_tag.items(), key=lambda x: x[1], reverse=True)).keys())[:5]
+
+                new_artist = Artist.objects.create(artist_id=artist[1], artist_name=artist[2])
+                for tag in dict_sort_tag:
+                    new_artist.tags.add(tag)
+                new_artist.save()
+
+                # 新規作成作者のリストに追加
+                new_artist_list.append(new_artist)
+                print("NewCreate ==> <%s>[%s] %s" % (str(artist[0]), str(artist[1]), str(artist[2])))
+                print("作成完了\n")
+                count += 1
+
+            if count == 5:
+                print("break")
+                break
+
+        context['new_artist_list'] = new_artist_list
+        return context
