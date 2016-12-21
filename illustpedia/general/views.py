@@ -11,6 +11,7 @@ from collections import OrderedDict
 from pixivpy3 import *
 import time
 import copy
+import os
 
 
 # Form
@@ -23,7 +24,7 @@ class AccountCreateForm(UserCreationForm):
 class ArtistCreateForm(forms.ModelForm):
     class Meta:
         model = Artist
-        fields = ("artist_id", "artist_name", "tags")
+        fields = ("artist_id", "artist_name", "tags", "thumbnail")
 
 
 class TagSearchForm(forms.Form):
@@ -33,7 +34,7 @@ class TagSearchForm(forms.Form):
 class ArtistUpdateForm(forms.ModelForm):
     class Meta:
         model = Artist
-        fields = ("artist_id", "artist_name", "tags")
+        fields = ("artist_id", "artist_name", "tags", "thumbnail")
 
 
 # View
@@ -154,7 +155,7 @@ class ArtistCreateView(generic.CreateView):
     form_class = ArtistCreateForm
 
     def get_success_url(self):
-        return reverse('general:artist_detail', args=[self.object.id])
+        return reverse_lazy('general:artist_detail', args=[self.object.id])
 
 
 class ArtistDetailView(generic.DetailView):
