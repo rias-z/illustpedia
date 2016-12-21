@@ -7,14 +7,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import IPUser, Artist
 from taggit.models import Tag
-import copy
 from collections import OrderedDict
-# import urllib.request
 from pixivpy3 import *
 import time
-import json
-from time import sleep
-import os
+import copy
 
 
 # Form
@@ -34,6 +30,12 @@ class TagSearchForm(forms.Form):
     tag_list = forms.CharField(label="検索タグ", max_length=100)
 
 
+class ArtistUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ("artist_id", "artist_name", "tags")
+
+
 # View
 class IndexView(generic.TemplateView):
     template_name = 'I000_index.html'
@@ -51,7 +53,7 @@ class LoginView(generic.FormView):
 
 
 class LogoutView(generic.View):
-    def get(self, request, *args, **kwargs):
+    def get(self):
         logout(self.request)
         return redirect('general:login')
 
@@ -80,7 +82,6 @@ class TopView(generic.FormView):
     template_name = 'I003_top.html'
     form_class = TagSearchForm
     tag_list = None
-    # success_url = reverse('general:tag_search', kwargs={'tag_list': 10})
 
     def get_context_data(self, **kwargs):
         context = super(TopView, self).get_context_data(**kwargs)
@@ -89,6 +90,7 @@ class TopView(generic.FormView):
         dict_tag_and_count_list = {}
         user_follow_artist_list = self.request.user.fav_artist.all()
 
+        # 自分のフォローしている作者のタグを総計する
         for artist in user_follow_artist_list:
             all_artist_tag = artist.tags.all()
             for tag in all_artist_tag:
@@ -97,11 +99,14 @@ class TopView(generic.FormView):
                 else:
                     dict_tag_and_count_list.update({tag: 1})
 
+        # 総計したタグの辞書を、タグの数が多い順に降順リストに変更する
         dict_sort_tag_list_order = OrderedDict(
             sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True))
 
+        # リストを上位５番目までカットしたリスト
         dict_sort_tag_list_order_keys = list(dict_sort_tag_list_order.keys())[:5]
 
+        # 優先作者タグリストからリサーチ
         dict_artist_and_count_list = {}
         for tag in dict_sort_tag_list_order_keys:
             research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
@@ -111,9 +116,11 @@ class TopView(generic.FormView):
                 else:
                     dict_artist_and_count_list.update({artist: 1})
 
+        # 作者を降順にリスト化
         dict_sort_artist_list_order = list(OrderedDict(sorted(dict_artist_and_count_list.items(),
                                                               key=lambda x: x[1], reverse=True)).keys())
 
+        # フォローしていない作者リスト
         dict_sort_artist_list_order_non_follow = copy.deepcopy(dict_sort_artist_list_order)
 
         for artist in user_follow_artist_list:
@@ -181,9 +188,6 @@ class TagSearchView(generic.TemplateView):
         context = super(TagSearchView, self).get_context_data(**kwargs)
         tag_list = kwargs.get('tag_list').split(',')
 
-        # すべての作者のリスト
-        all_artist_list = Artist.objects.all()
-
         # 検索タグにヒットした作者のリスト
         for tag in tag_list:
             hit_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
@@ -231,7 +235,6 @@ class TagSearchView(generic.TemplateView):
             if artist in dict_sort_artist_list_order_non_follow:
                 dict_sort_artist_list_order_non_follow.remove(artist)
 
-        context['all_artist_list'] = all_artist_list
         context['hit_tag_artist_list'] = hit_tag_artist_list
         context['dict_sort_tag_list_order'] = list(dict_sort_tag_list)[:5]
         context['user_follow_artist_list'] = user_follow_artist_list
@@ -268,10 +271,13 @@ class ArtistAutoCreateView(generic.TemplateView):
         for artist in artist_list:
             flag_exist = False
             for artist_id in list_all_id:
+
+                # 作者がすでに登録されている場合
                 if artist[1] == artist_id:
                     flag_exist = True
                     break
 
+            # 作者が登録されていない場合
             if not flag_exist:
                 print("4 minutes wait...\n")
                 time.sleep(4)
@@ -287,12 +293,17 @@ class ArtistAutoCreateView(generic.TemplateView):
                                 dict_tag[tag] += 1
                             else:
                                 dict_tag.update({tag: 1})
-
                 dict_sort_tag = list(OrderedDict(sorted(dict_tag.items(), key=lambda x: x[1], reverse=True)).keys())[:5]
 
+                # 新規作成された作者リストに追加
                 new_artist = Artist.objects.create(artist_id=artist[1], artist_name=artist[2])
                 for tag in dict_sort_tag:
                     new_artist.tags.add(tag)
+
+                # no_imageとして保存
+                new_artist.thumbnail = "./no_image.png"
+
+                # DBに作者を保存
                 new_artist.save()
 
                 # 新規作成作者のリストに追加
@@ -301,9 +312,20 @@ class ArtistAutoCreateView(generic.TemplateView):
                 print("作成完了\n")
                 count += 1
 
+            # 追加人数が5人になったら処理を終了する
             if count == 5:
                 print("break")
                 break
 
         context['new_artist_list'] = new_artist_list
+        return context
+
+
+class AllArtistView(generic.TemplateView):
+    template_name = 'I011_all_artist.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AllArtistView, self).get_context_data(**kwargs)
+
+        context['artist_list'] = Artist.objects.all()
         return context

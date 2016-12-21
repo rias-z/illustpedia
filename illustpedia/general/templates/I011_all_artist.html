@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>I010_作者ページ一覧</title>
+</head>
+<body>
+
+    <h1>I010_作者ページ一覧</h1>
+
+    <HR>
+    作者ページ一覧<br>
+    {% for artist in artist_list %}
+        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a></li>
+    {% endfor %}
+
+    <HR><br>
+</body>
+</html>

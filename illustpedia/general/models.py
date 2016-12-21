@@ -29,6 +29,7 @@ class AuthUserManager(BaseUserManager):
 class Artist(models.Model):
     artist_id = models.IntegerField("作者ID", unique=True)
     artist_name = models.CharField("作者の名前", max_length=30)
+    thumbnail = models.ImageField("サムネイル", upload_to='thumbnail/', blank=True)
 
     tags = TaggableManager()
 
