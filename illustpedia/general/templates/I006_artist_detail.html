@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +11,10 @@
     <h1>I006_作者ページ詳細画面</h1>
     作者のpixivID: {{ artist.artist_id }}<br>
     作者の名前: {{ artist.artist_name }}<br>
-    作者のアイコン画像: （未実装）<br>
+    作者のアイコン画像:<br>
+    <figure>
+        <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="100">
+    </figure>
     作者のpixivURL: <a href="http://www.pixiv.net/member.php?id={{ artist.artist_id }}" >
         http://www.pixiv.net/member.php?id={{ artist.artist_id }}</a><br>
     作者タグ:

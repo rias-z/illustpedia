@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'general'
 urlpatterns = [
@@ -14,4 +16,4 @@ urlpatterns = [
     url(r'^tag_search/tag=(?P<tag_list>[\w,]+)/$', views.TagSearchView.as_view(), name="tag_search"),
     url(r'^auto_create/$', views.ArtistAutoCreateView.as_view(), name="auto_create"),
     url(r'^all_artist/$', views.AllArtistView.as_view(), name="all_artist"),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

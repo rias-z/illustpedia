@@ -30,6 +30,12 @@ class TagSearchForm(forms.Form):
     tag_list = forms.CharField(label="検索タグ", max_length=100)
 
 
+class ArtistUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ("artist_id", "artist_name", "tags")
+
+
 # View
 class IndexView(generic.TemplateView):
     template_name = 'I000_index.html'
@@ -293,6 +299,9 @@ class ArtistAutoCreateView(generic.TemplateView):
                 new_artist = Artist.objects.create(artist_id=artist[1], artist_name=artist[2])
                 for tag in dict_sort_tag:
                     new_artist.tags.add(tag)
+
+                # no_imageとして保存
+                new_artist.thumbnail = "./no_image.png"
 
                 # DBに作者を保存
                 new_artist.save()

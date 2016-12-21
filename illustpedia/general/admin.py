@@ -21,6 +21,7 @@ class ArtistAdmin(admin.ModelAdmin):
         ('artist_id', {'fields': ['artist_id']}),
         ('artist_name', {'fields': ['artist_name']}),
         ('tags', {'fields': ['tags']}),
+        ('thumbnail', {'fields': ['thumbnail']}),
     ]
 admin.site.register(Artist, ArtistAdmin)
 
