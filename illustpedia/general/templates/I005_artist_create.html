@@ -7,7 +7,7 @@
 <body>
     <h1>I005_作者ページ作成画面</h1>
 
-    <form action="{% url 'general:artist_create' %}" method="post">
+    <form action="{% url 'general:artist_create' %}" method="post" enctype="multipart/form-data">
 
         <table>
             {% csrf_token %}

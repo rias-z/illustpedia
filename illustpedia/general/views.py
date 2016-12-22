@@ -11,6 +11,7 @@ from collections import OrderedDict
 from pixivpy3 import *
 import time
 import copy
+import os
 
 
 # Form
@@ -23,7 +24,7 @@ class AccountCreateForm(UserCreationForm):
 class ArtistCreateForm(forms.ModelForm):
     class Meta:
         model = Artist
-        fields = ("artist_id", "artist_name", "tags")
+        fields = ("artist_id", "artist_name", "tags", "thumbnail")
 
 
 class TagSearchForm(forms.Form):
@@ -33,7 +34,7 @@ class TagSearchForm(forms.Form):
 class ArtistUpdateForm(forms.ModelForm):
     class Meta:
         model = Artist
-        fields = ("artist_id", "artist_name", "tags")
+        fields = ("artist_id", "artist_name", "tags", "thumbnail")
 
 
 # View
@@ -133,7 +134,6 @@ class TopView(generic.FormView):
         return context
 
     def form_valid(self, form):
-        print("form_valid")
         tag_list = form.cleaned_data['tag_list']
         self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list})
 
@@ -154,7 +154,7 @@ class ArtistCreateView(generic.CreateView):
     form_class = ArtistCreateForm
 
     def get_success_url(self):
-        return reverse('general:artist_detail', args=[self.object.id])
+        return reverse_lazy('general:artist_detail', args=[self.object.id])
 
 
 class ArtistDetailView(generic.DetailView):
@@ -179,6 +179,22 @@ class ArtistDetailView(generic.DetailView):
         artist_list = self.request.user.fav_artist
         artist_list.add(self.get_object())
         return redirect("general:artist_detail", pk=self.kwargs.get("pk"))
+
+
+class ArtistUpdateView(generic.UpdateView):
+    template_name = 'I007_artist_update.html'
+    form_class = ArtistUpdateForm
+    model = Artist
+
+    def get_queryset(self):
+        self.queryset = Artist.objects.all()
+        return super(ArtistUpdateView, self).get_queryset()
+
+    def get(self, request, pk, *args, **kwargs):
+        return super(ArtistUpdateView, self).get(request)
+
+    def get_success_url(self):
+        return reverse_lazy('general:artist_detail', args=[self.object.id])
 
 
 class TagSearchView(generic.TemplateView):
@@ -218,7 +234,7 @@ class TagSearchView(generic.TemplateView):
         dict_artist_and_count_list = {}
         for tag in dict_sort_tag_list_order_keys:
             # （優先作者タグ）&&（検索タグにヒットした作者のリスト）
-            research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag]) & hit_tag_artist_list
+            research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
             for artist in research_tag_artist_list:
                 if artist in dict_artist_and_count_list:
                     dict_artist_and_count_list[artist] += 1

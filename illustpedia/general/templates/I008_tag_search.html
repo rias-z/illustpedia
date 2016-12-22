@@ -8,32 +8,42 @@
     <h1>I008_タグ検索画面</h1>
 
     <HR>
-    dict_sort_artist_list_order（　あなたへのおすすめリスト　）<br>
-    {% for artist in dict_sort_artist_list_order %}
-        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
-    {% endfor %}
-
-    <HR>
-    dict_sort_tag_list_order（　ユーザのフォローしている作者の作者タグを総計し、数が多い上位５つのタグ　）<br>
+{#    dict_sort_tag_list_order#}
+    ＜ユーザのフォローしている作者の作者タグを総計し、数が多い上位５つのタグ＞<br>
     タグ　合計数<br>
     {% for list in dict_sort_tag_list_order %}
-        <li>[
+        [
         {% for order in list %}
             {{ order }},
         {% endfor %}
-        ]</li>
+        ]<br>
     {% endfor %}
 
     <HR>
-    user_follow_artist_list（　あなたがフォローしている作者　）<br>
-    {% for artist in user_follow_artist_list %}
-        <li>{{ artist }}</li>
-    {% endfor %}
-
-    <HR>
-    dict_sort_artist_list_order（　あなたへのおすすめリスト（フォローしてない作者）　）<br>
+{#    dict_sort_artist_list_order#}
+    ＜あなたへのおすすめリスト（フォローしてない作者）＞<br>
     {% for artist in dict_sort_artist_list_order_non_follow %}
-        <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
+        <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
+        <a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a>
+        <br>
+    {% endfor %}
+
+    <HR>
+{#    dict_sort_artist_list_order#}
+    ＜あなたへのおすすめリスト（すべての作者）＞<br>
+    {% for artist in dict_sort_artist_list_order %}
+        <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
+        <a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a>
+        <br>
+    {% endfor %}
+
+    <HR>
+{#    user_follow_artist_list#}
+    ＜あなたが現在フォローしているすべての作者＞<br>
+    {% for artist in user_follow_artist_list %}
+        <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
+        {{ artist }}
+        <br>
     {% endfor %}
 
     <HR>
