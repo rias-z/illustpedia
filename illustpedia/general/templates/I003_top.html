@@ -21,13 +21,7 @@
 
         <li><a href="{% url 'general:artist_create' %}">作者ページを新規追加（手動）</a></li>
 
-        <li>（推薦機能１）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
-            <ul>
-                {% for artist in dict_sort_artist_list_order_non_follow %}
-                    <li><a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a></li>
-                {% endfor %}
-            </ul>
-        <br><li>（推薦機能２）タグ検索する（ユーザのファボ一覧から推薦検索）</li>
+        <li>（推薦機能１）タグ検索する（ユーザのファボ一覧から推薦検索）</li>
             <ol>
                 <form action="{% url 'general:top' %}" method="post">
                     <li>すべて検索（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
@@ -38,6 +32,15 @@
                     <button type="submit" class="form-button">タグ検索</button>
                 </form>
             </ol>
+        <br>
+        <li>（推薦機能２）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
+            <ul>
+                {% for artist in dict_sort_artist_list_order_non_follow %}
+                    <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
+                    <a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a>
+                    <br>
+                {% endfor %}
+            </ul>
     </ol>
 
     <HR>
