@@ -28,10 +28,16 @@
             {% csrf_token %}
             <input type="submit" value="フォローする" />
         </form>
-{#        <input type="button" value="フォローする" method="post" onClick="{% url 'general:artist_detail' artist.id %}" />#}
     {% endif %}
 
-    <br><input type="button" value="戻る" onClick="history.back()">
+    <form action="{% url 'general:artist_update' artist.id %}" method="get">
+{#            {% csrf_token %}#}
+            <input type="submit" value="編集する" /><br>
+    </form>
+
+    <br>
+
+    <input type="button" value="戻る" onClick="history.back()">
 
 </body>
 </html>

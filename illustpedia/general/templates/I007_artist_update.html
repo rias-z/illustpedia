@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>作者ページ編集画面</title>
+</head>
+<body>
+    <h1>I005_作者ページ編集画面</h1>
+
+    <form action="{% url 'general:artist_update' artist.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+
+        <br>
+
+        <button type="submit" class="form-button">変更する</button>
+    </form>
+</body>
+</html>

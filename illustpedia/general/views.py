@@ -182,6 +182,22 @@ class ArtistDetailView(generic.DetailView):
         return redirect("general:artist_detail", pk=self.kwargs.get("pk"))
 
 
+class ArtistUpdateView(generic.UpdateView):
+    template_name = 'I007_artist_update.html'
+    form_class = ArtistUpdateForm
+    model = Artist
+
+    def get_queryset(self):
+        self.queryset = Artist.objects.all()
+        return super(ArtistUpdateView, self).get_queryset()
+
+    def get(self, request, pk, *args, **kwargs):
+        return super(ArtistUpdateView, self).get(request)
+
+    def get_success_url(self):
+        return reverse_lazy('general:artist_detail', args=[self.object.id])
+
+
 class TagSearchView(generic.TemplateView):
     template_name = 'I008_tag_search.html'
 
