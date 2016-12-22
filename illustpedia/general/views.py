@@ -134,7 +134,6 @@ class TopView(generic.FormView):
         return context
 
     def form_valid(self, form):
-        print("form_valid")
         tag_list = form.cleaned_data['tag_list']
         self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list})
 
@@ -235,7 +234,7 @@ class TagSearchView(generic.TemplateView):
         dict_artist_and_count_list = {}
         for tag in dict_sort_tag_list_order_keys:
             # （優先作者タグ）&&（検索タグにヒットした作者のリスト）
-            research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag]) & hit_tag_artist_list
+            research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
             for artist in research_tag_artist_list:
                 if artist in dict_artist_and_count_list:
                     dict_artist_and_count_list[artist] += 1
