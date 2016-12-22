@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,11 +12,11 @@
 
     以下が今回作成された作者ページです。<br>
 
-    <ul>
-        {% for new_artist in new_artist_list %}
-            <li><a href="{% url 'general:artist_detail' new_artist.id %}">{{ new_artist }}</a></li>
-        {% endfor %}
-    </ul>
+    {% for new_artist in new_artist_list %}
+        <img src="{{ STATIC_URL }}{{ new_artist.thumbnail.url }}" width="35">
+        <a href="{% url 'general:artist_detail' new_artist.id %}">{{ new_artist }}</a>
+        <br>
+    {% endfor %}
 
 </body>
 </html>
