@@ -1,10 +1,28 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>I010_作者ページ作成画面（pixivのフォローから）</title>
 </head>
 <body>
+    <h1>I010_作者ページ作成画面（pixivのフォローから）</h1>
+    あなたのpixivアカウントのフォロワーから、自動で作者ページを作成します。<br>
+
+    <br>
+    pixivID、パスワード<br>
+    決定ボタン<br>
+
+    <br>
+
+    以下が今回作成された作者ページです。<br>
+
+    {% for new_artist in new_artist_list %}
+        <img src="{{ STATIC_URL }}{{ new_artist.thumbnail.url }}" width="35">
+        <a href="{% url 'general:artist_detail' new_artist.id %}">{{ new_artist }}</a>
+        <br>
+    {% endfor %}
 
 </body>
 </html>

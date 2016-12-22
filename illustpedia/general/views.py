@@ -259,18 +259,18 @@ class TagSearchView(generic.TemplateView):
         return context
 
 
-class ArtistAutoCreateView(generic.TemplateView):
+class ArtistAutoCreateFromRankingView(generic.TemplateView):
     template_name = 'I009_create_from_ranking.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(ArtistAutoCreateView, self).get_context_data(**kwargs)
+        context = super(ArtistAutoCreateFromRankingView, self).get_context_data(**kwargs)
 
         # ログイン処理
         api = PixivAPI()
         api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
 
-        artist_list = []        # すべての作者リスト
-        list_all_id = []        # すべての作者idのリスト
+        artist_list = []        # ランキングのすべての作者リスト
+        list_all_id = []        # illustpediaに登録されているすべての作者idのリスト
         new_artist_list = []    # 新規作成された作者のリスト
 
         for artist in Artist.objects.all():
@@ -325,6 +325,83 @@ class ArtistAutoCreateView(generic.TemplateView):
                 # 新規作成作者のリストに追加
                 new_artist_list.append(new_artist)
                 print("NewCreate ==> <%s>[%s] %s" % (str(artist[0]), str(artist[1]), str(artist[2])))
+                print("作成完了\n")
+                count += 1
+
+            # 追加人数が5人になったら処理を終了する
+            if count == 5:
+                print("break")
+                break
+
+        context['new_artist_list'] = new_artist_list
+        return context
+
+
+class ArtistAutoCreateFromFollowView(generic.TemplateView):
+    template_name = 'I010_create_from_pixivFollow.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ArtistAutoCreateFromFollowView, self).get_context_data(**kwargs)
+
+        list_all_follow_artist = []  # すべての作者リスト
+        list_all_id = []  # illustpediaに登録されているすべての作者idのリスト
+        new_artist_list = []  # 新規作成された作者のリスト
+
+        for artist in Artist.objects.all():
+            list_all_id.append(artist.artist_id)
+
+        # ログイン処理
+        api = PixivAPI()
+        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
+
+        json_result = api.me_following().response
+
+        for artist in json_result:
+            print("[%s] %s" % (artist.id, artist.name))
+            list_all_follow_artist.append([artist.id, artist.name])
+
+        count = 0
+        for artist in list_all_follow_artist:
+            flag_exist = False
+            for artist_id in list_all_id:
+
+                # 作者がすでに登録されている場合
+                if artist[0] == artist_id:
+                    flag_exist = True
+                    break
+
+            # 作者が登録されていない場合
+            if not flag_exist:
+                print("4 minutes wait...\n")
+                time.sleep(4)
+                print("[" + artist[1] + "]のページを作成中")
+
+                # それぞれのartistのページから、イラスト30個分のタグを数の多い順にソート、上位５つを仮作者タグにする
+                dict_tag = {}
+                json_artist_result = api.users_works(artist[0]).response
+                for illust in json_artist_result:
+                    for tag in illust.tags:
+                        if 'users' not in tag:
+                            if tag in dict_tag.keys():
+                                dict_tag[tag] += 1
+                            else:
+                                dict_tag.update({tag: 1})
+                dict_sort_tag = list(OrderedDict(sorted(dict_tag.items(), key=lambda x: x[1], reverse=True)).keys())[:5]
+
+                # 新規作成された作者リストに追加
+                new_artist = Artist.objects.create(artist_id=artist[0], artist_name=artist[1])
+                for tag in dict_sort_tag:
+                    new_artist.tags.add(tag)
+
+                # no_imageとして保存
+                new_artist.thumbnail = "./thumbnail/no_image.png"
+
+                # DBに作者を保存
+                new_artist.save()
+
+                # 新規作成作者のリストに追加
+                new_artist_list.append(new_artist)
+                print("NewCreate ==> [%s] %s" % (str(artist[0]), str(artist[1])))
                 print("作成完了\n")
                 count += 1
 
