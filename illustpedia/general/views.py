@@ -1,8 +1,8 @@
-from django.views import generic
-from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.views import generic
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import IPUser, Artist
@@ -38,7 +38,7 @@ class ArtistUpdateForm(forms.ModelForm):
 
 # View
 class IndexView(generic.TemplateView):
-    template_name = 'I000_index.html'
+    template_name = 'I000_home.html'
 
 
 class LoginView(generic.FormView):
@@ -53,9 +53,9 @@ class LoginView(generic.FormView):
 
 
 class LogoutView(generic.View):
-    def get(self):
+    def get(self, request, *args, **kwargs):
         logout(self.request)
-        return redirect('general:login')
+        return redirect('general:home')
 
 
 class AccountCreateView(generic.CreateView):
@@ -268,7 +268,7 @@ class ArtistAutoCreateFromRankingView(generic.TemplateView):
 
         # ログイン処理
         api = PixivAPI()
-        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
+        api.login('username', 'password')
 
         artist_list = []        # ランキングのすべての作者リスト
         list_all_id = []        # illustpediaに登録されているすべての作者idのリスト
@@ -353,7 +353,7 @@ class ArtistAutoCreateFromFollowView(generic.TemplateView):
 
         # ログイン処理
         api = PixivAPI()
-        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
+        api.login('username', 'password')
 
         json_result = api.me_following().response
 

@@ -24,7 +24,7 @@
         <li>（推薦機能１）タグ検索する（ユーザのファボ一覧から推薦検索）</li>
             <ol>
                 <form action="{% url 'general:top' %}" method="post">
-                    <li>すべて検索（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
+                    <li>すべて検索（推薦検索ではない）（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
 {#                    <li>他のユーザのファボ一覧から推薦検索</li>#}
                     <li>自分のファボ一覧から推薦検索</li>
                     {% csrf_token %}
@@ -47,6 +47,7 @@
 
     [サーバ管理者機能]
     <ul>
+        ((views.pyにある api.login('username', 'password') に自分のpixivアカウントのメールとパスワードを入力))
         <li><a href="{% url 'general:auto_create_from_ranking' %}">作者ページを新規追加（自動　ランキングから）</a></li>
         <li><a href="{% url 'general:auto_create_from_follow' %}">作者ページを新規追加（自動　自分のpixivフォロワーから）</a></li>
         <li><a href="{% url 'general:all_artist' %}">作者ページ一覧</a></li>

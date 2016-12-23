@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 app_name = 'general'
 urlpatterns = [
-    url(r'^$', views.IndexView.as_view(), name="index"),
+    url(r'^$', views.IndexView.as_view(), name="home"),
     url(r'^login/$', views.LoginView.as_view(), name="login"),
     url(r'^logout/$', views.LogoutView.as_view(), name="logout"),
     url(r'^account_create/$', views.AccountCreateView.as_view(), name="account_create"),

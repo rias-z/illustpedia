@@ -69,10 +69,3 @@ class IPUser(AbstractBaseUser, PermissionsMixin):
         return True
 
 
-# class Tag(models.Model):
-#     tag_name = models.CharField("タグの名前", max_length=30)
-#     tag_num = models.IntegerField("作者につけられたタグの数")
-#
-#     def __str__(self):
-#         return self.tag_name
-
