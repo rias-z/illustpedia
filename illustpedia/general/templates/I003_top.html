@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>トップ画面</title>
+</head>
+<body>
+    <h1>I002_トップ画面</h1>
+
+    [現在のログインユーザ情報]------------------<br>
+    +{{user.username}}<br>
+    +{{user.email}}<br>
+    <a href="{% url 'general:logout' %}">ログアウト</a>
+    <br>------------------------------------------------------<br>
+
+    <HR>
+
+    [ユーザ機能]
+    <ol>
+        <li><a href="{% url 'general:account' %}">アカウントページ</a></li>
+
+        <li><a href="{% url 'general:artist_create' %}">作者ページを新規追加（手動）</a></li>
+
+        <li>（推薦機能１）タグ検索する（ユーザのファボ一覧から推薦検索）</li>
+            <ol>
+                <form action="{% url 'general:top' %}" method="post">
+                    <li>すべて検索（推薦検索ではない）（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
+{#                    <li>他のユーザのファボ一覧から推薦検索</li>#}
+                    <li>自分のファボ一覧から推薦検索</li>
+                    {% csrf_token %}
+                    {{ form }}
+                    <button type="submit" class="form-button">タグ検索</button>
+                </form>
+            </ol>
+        <br>
+        <li>（推薦機能２）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
+            <ul>
+                {% for artist in dict_sort_artist_list_order_non_follow %}
+                    <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
+                    <a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a>
+                    <br>
+                {% endfor %}
+            </ul>
+    </ol>
+
+    <HR>
+
+    [サーバ管理者機能]
+    <ul>
+        ((views.pyにある api.login('username', 'password') に自分のpixivアカウントのメールとパスワードを入力))
+        <li><a href="{% url 'general:auto_create_from_ranking' %}">作者ページを新規追加（自動　ランキングから）</a></li>
+        <li><a href="{% url 'general:auto_create_from_follow' %}">作者ページを新規追加（自動　自分のpixivフォロワーから）</a></li>
+        <li><a href="{% url 'general:all_artist' %}">作者ページ一覧</a></li>
+    </ul>
+
+    <HR><br>
+</body>
+</html>

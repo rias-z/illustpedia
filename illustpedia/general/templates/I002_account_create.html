@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>アカウント作成画面</title>
+</head>
+<body>
+    <h1>I002_アカウント作成画面</h1>
+
+    <form action="{% url 'general:account_create' %}" method="post">
+
+{#        ユーザID:<input type="text" name="username" /><br>#}
+{#        メールアドレス:<input type="text" name="email" /><br>#}
+{#        パスワード:<input type="password" name="password" /><br>#}
+        <table>
+            {% csrf_token %}
+            {{ form }}
+        </table>
+
+        <button type="submit" class="form-button">アカウント作成</button>
+    </form>
+
+</body>
+</html>

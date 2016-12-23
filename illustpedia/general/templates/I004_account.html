@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>アカウント画面</title>
+</head>
+<body>
+    <h1>I003_アカウント画面</h1>
+
+    [現在のログインユーザ情報]------------------<br>
+    +{{user.username}}<br>
+    +{{user.email}}<br>
+    <a href="{% url 'general:logout' %}">ログアウト</a>
+    <br>---------------------------------------------<br>
+    <HR><br>
+
+    <ol>
+        <li>アカウントを編集（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
+        <li>アカウントを削除（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
+
+        <li>お気に入り作者一覧<br></li>
+        <ul>
+        {% for artist in artist_list %}
+            <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
+            <a href="{% url 'general:artist_detail' artist.id %}">{{ artist.artist_name }}</a>
+            <br>
+        {% endfor %}
+        </ul>
+    </ol>
+    <input type="button" value="戻る" onClick="history.back()">
+
+</body>
+</html>
