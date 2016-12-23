@@ -11,7 +11,6 @@ from collections import OrderedDict
 from pixivpy3 import *
 import time
 import copy
-import os
 
 
 # Form
@@ -203,11 +202,12 @@ class TagSearchView(generic.TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(TagSearchView, self).get_context_data(**kwargs)
         tag_list = kwargs.get('tag_list').split(',')
-
+        
         # 検索タグにヒットした作者のリスト
         for tag in tag_list:
             hit_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
 
+        print(hit_tag_artist_list)
         # タグとタグ数の辞書
         dict_tag_and_count_list = {}
 
@@ -234,7 +234,8 @@ class TagSearchView(generic.TemplateView):
         dict_artist_and_count_list = {}
         for tag in dict_sort_tag_list_order_keys:
             # （優先作者タグ）&&（検索タグにヒットした作者のリスト）
-            research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
+            # research_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
+            research_tag_artist_list = hit_tag_artist_list.filter(tags__name__in=[tag])
             for artist in research_tag_artist_list:
                 if artist in dict_artist_and_count_list:
                     dict_artist_and_count_list[artist] += 1
