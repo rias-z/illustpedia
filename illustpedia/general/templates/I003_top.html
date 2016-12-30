@@ -33,14 +33,15 @@
                 </form>
             </ol>
         <br>
-        <li>（推薦機能２）あなたへのおすすめ一覧（ユーザのファボ一覧から推薦検索）</li>
-            <ul>
+        <li>（推薦機能２）あなたへのおすすめ一覧（ランキング形式で作者推薦）</li>
+            <ol>
                 {% for artist in dict_sort_artist_list_order_non_follow %}
+                    <li>
                     <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="35">
                     <a href="{% url 'general:artist_detail' artist.id %}">{{ artist }}</a>
-                    <br>
+                    </li>
                 {% endfor %}
-            </ul>
+            </ol>
     </ol>
 
     <HR>

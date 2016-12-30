@@ -207,7 +207,7 @@ class TagSearchView(generic.TemplateView):
         for tag in tag_list:
             hit_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
 
-        print(hit_tag_artist_list)
+        # print(hit_tag_artist_list)
         # タグとタグ数の辞書
         dict_tag_and_count_list = {}
 
@@ -268,7 +268,7 @@ class ArtistAutoCreateFromRankingView(generic.TemplateView):
 
         # ログイン処理
         api = PixivAPI()
-        api.login('username', 'password')
+        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
 
         artist_list = []        # ランキングのすべての作者リスト
         list_all_id = []        # illustpediaに登録されているすべての作者idのリスト
@@ -353,7 +353,7 @@ class ArtistAutoCreateFromFollowView(generic.TemplateView):
 
         # ログイン処理
         api = PixivAPI()
-        api.login('username', 'password')
+        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
 
         json_result = api.me_following().response
 
