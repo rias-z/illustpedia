@@ -19,7 +19,7 @@
         http://www.pixiv.net/member.php?id={{ artist.artist_id }}</a><br>
     作者タグ:
     {% for tag in tag_list %}
-        <li><a href="{% url 'general:tag_search' tag.name %}">{{ tag }}</a></li>
+        <li><a href="{% url 'general:tag_search_from_artist' tag.id %}">{{ tag }}</a></li>
     {% endfor %}
     {% if flag_fav %}
         [フォロー中]

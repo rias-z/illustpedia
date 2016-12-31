@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^artist_update/(?P<pk>[0-9]+)/$', views.ArtistUpdateView.as_view(), name="artist_update"),
     url(r'^artist_create/$', views.ArtistCreateView.as_view(), name="artist_create"),
     url(r'^tag_search/tag=(?P<tag_list>[\w,]+)/$', views.TagSearchView.as_view(), name="tag_search"),
+    url(r'^tag_search_from_artist/tag_num=(?P<tag_num>[\d,]+)/$', views.TagSearchFromArtistView.as_view(), name="tag_search_from_artist"),
     url(r'^auto_create_from_ranking/$', views.ArtistAutoCreateFromRankingView.as_view(), name="auto_create_from_ranking"),
     url(r'^auto_create_from_follow/$', views.ArtistAutoCreateFromFollowView.as_view(), name="auto_create_from_follow"),
     url(r'^all_artist/$', views.AllArtistView.as_view(), name="all_artist"),
