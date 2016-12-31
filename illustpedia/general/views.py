@@ -134,7 +134,12 @@ class TopView(generic.FormView):
 
     def form_valid(self, form):
         tag_list = form.cleaned_data['tag_list']
-        self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list})
+
+        if self.request.method == 'POST':
+            if 'button_1' in self.request.POST:
+                self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list, 'is_all': 0})
+            elif 'button_2' in self.request.POST:
+                self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list, 'is_all': 1})
 
         return super(TopView, self).form_valid(form)
 
@@ -202,12 +207,12 @@ class TagSearchView(generic.TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(TagSearchView, self).get_context_data(**kwargs)
         tag_list = kwargs.get('tag_list').split(',')
+        is_all = kwargs.get('is_all')
         
         # 検索タグにヒットした作者のリスト
         for tag in tag_list:
             hit_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
 
-        # print(hit_tag_artist_list)
         # タグとタグ数の辞書
         dict_tag_and_count_list = {}
 
