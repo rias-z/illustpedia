@@ -15,8 +15,8 @@
     + <a href="{% url 'general:account' %}">アカウントページ</a><br>
     + <a href="{% url 'general:logout' %}">ログアウト</a>
     <br>------------------------------------------------------<br>
+<HR>
 
-    <HR>
 
     [ユーザ機能]
     <ol>
@@ -35,7 +35,7 @@
 
         <br>
 
-        <li>（推薦機能２）あなたへのおすすめ一覧（ランキング形式で作者推薦）</li>
+        <li>（推薦機能２）あなたへのおすすめ一覧（ランキング形式で作者を推薦）</li>
             <ol>
                 {% for artist in dict_sort_artist_list_order_non_follow %}
                     <li>
