@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D001_イラストDBトップ画面</title>
+</head>
+<body>
+    <h1>D001_イラストDBトップ画面</h1>
+
+    <HR>
+
+    [現在のログインユーザ情報]------------------<br>
+    + name [ {{user.username}} ]<br>
+    + email [ {{user.email}} ]<br>
+    + <a href="{% url 'general:account' %}">アカウントページ</a><br>
+    + <a href="{% url 'general:logout' %}">ログアウト</a>
+    <br>------------------------------------------------------<br>
+
+    <HR>
+
+    [ユーザ機能]
+
+    <ol>
+        <li>イラストを新規登録</li>
+        <li>タグ検索</li>
+        <li>投稿されたイラスト一覧</li>
+
+    </ol>
+
+</body>
+</html>

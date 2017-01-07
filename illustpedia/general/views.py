@@ -491,3 +491,13 @@ class AllArtistView(generic.TemplateView):
 
         context['artist_list'] = Artist.objects.all()
         return context
+
+
+# イラストDBデータベース
+class IllustDBTopView(generic.TemplateView):
+    template_name = 'D001_illust_top.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(IllustDBTopView, self).get_context_data(**kwargs)
+
+        return context
