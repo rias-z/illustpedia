@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D002_イラスト登録画面</title>
+</head>
+<body>
+
+    <h1>D002_イラスト登録画面</h1>
+
+    <HR>
+
+    <form action="{% url 'general:illust_register' %}" method="post" enctype="multipart/form-data">
+
+        <table>
+            {% csrf_token %}
+            {{ form }}
+        </table>
+
+        <br>
+
+        タグの付け方(わかる範囲で)<br>
+        @キャラクターの名前, @作品名, @体位, @服装, @視点, @構図, @シチュエーション
+
+        <br><br>
+
+        <button type="submit" class="form-button">イラスト新規登録</button>
+    </form>
+
+</body>
+</html>

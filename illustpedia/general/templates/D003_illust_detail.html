@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D003_イラスト詳細ページ</title>
+</head>
+<body>
+
+    <h1>D003_イラスト詳細ページ</h1>
+
+    <HR>
+
+    id:{{ illust.id }}<br>
+    tags:
+    {% for tag in illust_tag_list %}
+        {{ tag }},
+    {% endfor %}
+
+    <br>
+
+    <img src="{{ STATIC_URL }}{{ illust.image.url }}">
+
+</body>
+</html>

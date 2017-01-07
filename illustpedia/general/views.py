@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.views import generic
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import IPUser, Artist
+from .models import IPUser, Artist, Illust
 from taggit.models import Tag
 from collections import OrderedDict
 from pixivpy3 import *
@@ -34,6 +34,12 @@ class ArtistUpdateForm(forms.ModelForm):
     class Meta:
         model = Artist
         fields = ("artist_id", "artist_name", "tags", "thumbnail")
+
+
+class IllustRegisterForm(forms.ModelForm):
+    class Meta:
+        model = Illust
+        fields = ("image", "tags")
 
 
 # View
@@ -500,4 +506,33 @@ class IllustDBTopView(generic.TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(IllustDBTopView, self).get_context_data(**kwargs)
 
+        context['all_illust_list'] = Illust.objects.all()
         return context
+
+
+class IllustDBRegisterView(generic.CreateView):
+    template_name = 'D002_illust_register.html'
+    form_class = IllustRegisterForm
+
+    def get_success_url(self):
+        return reverse_lazy('general:illust_detail', args=[self.object.id])
+
+
+class IllustDBDetailView(generic.DetailView):
+    template_name = 'D003_illust_detail.html'
+    model = Illust
+
+    def get_queryset(self):
+        self.queryset = Illust.objects.all()
+        return super(IllustDBDetailView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(IllustDBDetailView, self).get_context_data(**kwargs)
+        context['illust'] = self.get_object()
+        context['illust_tag_list'] = self.get_object().tags.all()
+        return context
+
+    # def post(self, request, *args, **kwargs):
+    #     artist_list = self.request.user.fav_artist
+    #     artist_list.add(self.get_object())
+    #     return redirect("general:artist_detail", pk=self.kwargs.get("pk"))

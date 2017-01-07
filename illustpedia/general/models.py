@@ -69,3 +69,8 @@ class IPUser(AbstractBaseUser, PermissionsMixin):
         return True
 
 
+# イラストDB
+class Illust(models.Model):
+    image = models.ImageField("イラスト画像", upload_to='illust/')
+    tags = TaggableManager()
+
