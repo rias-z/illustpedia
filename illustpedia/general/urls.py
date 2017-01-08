@@ -25,5 +25,7 @@ urlpatterns = [
     url(r'^illust_top/$', views.IllustDBTopView.as_view(), name="illust_top"),
     url(r'^illust_register/$', views.IllustDBRegisterView.as_view(), name="illust_register"),
     url(r'^illust_detail/(?P<pk>[0-9]+)/$', views.IllustDBDetailView.as_view(), name="illust_detail"),
+    url(r'^illust_tag_search/tag_list=(?P<tag_list>[\w,]+)/$', views.IllustTagSearchView.as_view(),
+        name="illust_tag_search"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

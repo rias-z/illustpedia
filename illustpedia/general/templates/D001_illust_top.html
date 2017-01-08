@@ -22,14 +22,20 @@
 
     <ol>
         <li><a href="{% url 'general:illust_register' %}">イラストを新規登録</a></li>
-        <li>タグ検索</li>
-        <li>投稿されたイラスト一覧</li>
 
+        <li>タグ検索
+            <form action="{% url 'general:illust_top' %}" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="form-button">検索</button>
+            </form>
+        </li>
+
+        <li>投稿されたイラスト一覧</li>
         {% for illust in all_illust_list %}
             <p>
-            id:{{ illust.id }}
             <a href="{% url 'general:illust_detail' illust.id %}">
-                <img src="{{ STATIC_URL }}{{ illust.image.url }}" width="100" border="0">
+                <img src="{{ STATIC_URL }}{{ illust.image.url }}" height="100" border="0">
             </a>
             </p>
         {% endfor %}
