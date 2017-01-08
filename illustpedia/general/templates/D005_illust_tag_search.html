@@ -2,9 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>D005_イラストタグ検索画面</title>
 </head>
 <body>
+
+    <h1>D005_イラストタグ検索画面</h1>
+
+    <HR>
+
+    {% for illust in hit_illust_list %}
+        <p>
+            <a href="{% url 'general:illust_detail' illust.id %}">
+                <img src="{{ STATIC_URL }}{{ illust.image.url }}" height="100" border="0">
+            </a>
+        </p>
+    {% endfor %}
 
 </body>
 </html>
