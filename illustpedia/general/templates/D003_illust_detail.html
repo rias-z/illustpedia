@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>illust_database</title>
+</head>
+<body>
+    イラスト詳細
+    <HR>
+
+    id:{{ illust.id }}<br>
+    tags:
+    {% for tag in illust_tag_list %}
+        {{ tag }},
+    {% endfor %}
+
+    <br>
+
+    <img src="{{ STATIC_URL }}{{ illust.image.url }}">
+
+</body>
+</html>

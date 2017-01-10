@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>illust_database</title>
+</head>
+<body>
+    イラストデータベース＿トップ
+    <HR>
+
+    [現在のログインユーザ情報]------------------<br>
+    + name [ {{user.username}} ]<br>
+    + email [ {{user.email}} ]<br>
+    + <a href="{% url 'general:account' %}">アカウントページ</a><br>
+    + <a href="{% url 'general:logout' %}">ログアウト</a>
+    <br>------------------------------------------------------<br>
+
+    <HR>
+
+    [ユーザ機能]
+
+    <ol>
+        <li><a href="{% url 'general:illust_register' %}">イラストを新規登録</a></li>
+
+        <li>タグ検索
+            <form action="{% url 'general:illust_top' %}" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="form-button">検索</button>
+            </form>
+        </li>
+
+        <li>投稿されたイラスト一覧</li>
+        {% for illust in all_illust_list %}
+            <p>
+            <a href="{% url 'general:illust_detail' illust.id %}">
+                <img src="{{ STATIC_URL }}{{ illust.image.url }}" height="100" border="0">
+            </a>
+            </p>
+        {% endfor %}
+
+    </ol>
+
+</body>
+</html>

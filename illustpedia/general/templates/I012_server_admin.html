@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>illustpedia</title>
+</head>
+<body>
+    仮設サーバ管理者画面
+    <HR>
+
+    <a href="{% url 'general:all_artist' %}">作者ページ一覧</a><br>
+
+    <br>
+
+    <form action="{% url 'general:server_admin' %}" method="post">
+        {% csrf_token %}
+{#        <table>#}
+{#            {{ form }}#}
+{#        </table>#}
+        views.pyの　api.login('your_pixiv_userid', 'your_pixiv_password')　の2つの引数を変更すること<br>
+        <button type="submit" class="form-button" name="button_x">作者ページを新規追加（自動　ランキングから）</button><br>
+        <button type="submit" class="form-button" name="button_y">作者ページを新規追加（自動　自分のpixivフォロワーから）</button>
+
+    </form>
+
+</body>
+</html>

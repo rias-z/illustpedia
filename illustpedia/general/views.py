@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.views import generic
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import IPUser, Artist
+from .models import IPUser, Artist, Illust
 from taggit.models import Tag
 from collections import OrderedDict
 from pixivpy3 import *
@@ -34,6 +34,21 @@ class ArtistUpdateForm(forms.ModelForm):
     class Meta:
         model = Artist
         fields = ("artist_id", "artist_name", "tags", "thumbnail")
+
+
+class PixivAccountForm(forms.Form):
+    email_or_pixivid = forms.CharField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput(), required=True)
+
+
+class IllustRegisterForm(forms.ModelForm):
+    class Meta:
+        model = Illust
+        fields = ("image", "tags")
+
+
+class IllustTagSearchForm(forms.Form):
+    tag_list = forms.CharField(label="検索タグ", max_length=100)
 
 
 # View
@@ -67,12 +82,6 @@ class AccountCreateView(generic.CreateView):
         obj = AccountCreateForm(request.POST).save(commit=False)
         obj.created_by = self.request.user
         obj.save()
-
-        # ユーザを作成してログイン処理し、トップに遷移する　一時退避
-        # user = authenticate(username=cleaned_data['username'],
-        #                     password=cleaned_data['password1'])
-        # login(self.request, user)
-        # return redirect(reverse('general:top', args=(), kwargs={}))
 
     def get_success_url(self):
             return reverse_lazy('general:login')
@@ -134,9 +143,31 @@ class TopView(generic.FormView):
 
     def form_valid(self, form):
         tag_list = form.cleaned_data['tag_list']
-        self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list})
+
+        if self.request.method == 'POST':
+            if 'button_1' in self.request.POST:
+                self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list, 'is_all': 0})
+            elif 'button_2' in self.request.POST:
+                self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list, 'is_all': 1})
 
         return super(TopView, self).form_valid(form)
+
+
+class ServerAdminView(generic.FormView):
+    template_name = 'I012_server_admin.html'
+    form_class = PixivAccountForm
+
+    def form_valid(self, form):
+
+        if self.request.method == 'POST':
+            if 'button_x' in self.request.POST:
+                print("x")
+                self.success_url = reverse('general:auto_create_from_ranking')
+            elif 'button_y' in self.request.POST:
+                print("y")
+                self.success_url = reverse('general:auto_create_from_follow')
+
+        return super(ServerAdminView, self).form_valid(form)
 
 
 class AccountView(generic.TemplateView):
@@ -202,12 +233,83 @@ class TagSearchView(generic.TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(TagSearchView, self).get_context_data(**kwargs)
         tag_list = kwargs.get('tag_list').split(',')
-        
+        is_all = kwargs.get('is_all')
+
+        hit_tag_artist_list = []
+
+        # ユーザのフォローしている作者
+        user_follow_artist_list = self.request.user.fav_artist.all()
+
         # 検索タグにヒットした作者のリスト
         for tag in tag_list:
-            hit_tag_artist_list = Artist.objects.filter(tags__name__in=[tag])
+            list_hit_artist = Artist.objects.filter(tags__name__in=[tag])
+            hit_tag_artist_list.extend(list_hit_artist)
 
-        # print(hit_tag_artist_list)
+        hit_tag_artist_list = list(set(hit_tag_artist_list))
+
+        # タグとタグ数の辞書
+        dict_tag_and_count_list = {}
+
+        # ユーザのフォローしている作者すべてから、タグを抽出
+        for artist in user_follow_artist_list:
+            all_artist_tag = artist.tags.all()
+            for tag in all_artist_tag:
+                if tag in dict_tag_and_count_list.keys():
+                    dict_tag_and_count_list[tag] += 1
+                else:
+                    dict_tag_and_count_list.update({tag: 1})
+
+        # タグを多い順にソートして5つだけにした辞書（優先作者タグ）
+        dict_sort_tag_list = sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True)
+        dict_sort_tag_list_order = OrderedDict(sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True))
+
+        # ソートされたタグのリスト（優先作者タグリスト）
+        dict_sort_tag_list_order_keys = list(dict_sort_tag_list_order.keys())[:5]
+
+        # # 優先作者タグリストからリサーチ
+        dict_artist_and_count_list = {}
+        for tag in dict_sort_tag_list_order_keys:
+            for artist in hit_tag_artist_list:
+                if tag in artist.tags.all():
+                    if artist in dict_artist_and_count_list:
+                        dict_artist_and_count_list[artist] += 1
+                    else:
+                        dict_artist_and_count_list.update({artist: 1})
+
+        # すべて検索
+        if is_all == "0":
+            dict_sort_artist_list_order = hit_tag_artist_list
+
+        # 推薦検索
+        elif is_all == "1":
+            # 作者を降順にリスト化
+            dict_sort_artist_list_order = list(OrderedDict(sorted(dict_artist_and_count_list.items(),
+                                                                  key=lambda x: x[1], reverse=True)).keys())
+
+        # フォローしていない作者リスト
+        dict_sort_artist_list_order_non_follow = copy.deepcopy(dict_sort_artist_list_order)
+        for artist in user_follow_artist_list:
+            if artist in dict_sort_artist_list_order_non_follow:
+                dict_sort_artist_list_order_non_follow.remove(artist)
+
+        context['hit_tag_artist_list'] = hit_tag_artist_list
+        context['dict_sort_tag_list_order'] = list(dict_sort_tag_list)[:5]
+        context['user_follow_artist_list'] = user_follow_artist_list
+        context['dict_sort_artist_list_order'] = dict_sort_artist_list_order
+        context['dict_sort_artist_list_order_non_follow'] = dict_sort_artist_list_order_non_follow
+        return context
+
+
+class TagSearchFromArtistView(generic.TemplateView):
+    template_name = 'I008_tag_search.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TagSearchFromArtistView, self).get_context_data(**kwargs)
+        tag_num = kwargs.get('tag_num')
+
+        # # 検索タグにヒットした作者のリスト
+        hit_tag_artist_list = Artist.objects.filter(tags__id__in=[tag_num])
+
         # タグとタグ数の辞書
         dict_tag_and_count_list = {}
 
@@ -225,7 +327,8 @@ class TagSearchView(generic.TemplateView):
 
         # タグを多い順にソートして5つだけにした辞書（優先作者タグ）
         dict_sort_tag_list = sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True)
-        dict_sort_tag_list_order = OrderedDict(sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True))
+        dict_sort_tag_list_order = OrderedDict(
+            sorted(dict_tag_and_count_list.items(), key=lambda x: x[1], reverse=True))
 
         # ソートされたタグのリスト（優先作者タグリスト）
         dict_sort_tag_list_order_keys = list(dict_sort_tag_list_order.keys())[:5]
@@ -260,8 +363,9 @@ class TagSearchView(generic.TemplateView):
         return context
 
 
-class ArtistAutoCreateFromRankingView(generic.TemplateView):
+class ArtistAutoCreateFromRankingView(generic.FormView):
     template_name = 'I009_create_from_ranking.html'
+    form_class = PixivAccountForm
 
     def get_context_data(self, *args, **kwargs):
         context = super(ArtistAutoCreateFromRankingView, self).get_context_data(**kwargs)
@@ -395,7 +499,7 @@ class ArtistAutoCreateFromFollowView(generic.TemplateView):
                     new_artist.tags.add(tag)
 
                 # no_imageとして保存
-                new_artist.thumbnail = "./thumbnail/no_image.png"
+                new_artist.thumbnail = "./no_image.png"
 
                 # DBに作者を保存
                 new_artist.save()
@@ -420,6 +524,61 @@ class AllArtistView(generic.TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(AllArtistView, self).get_context_data(**kwargs)
-
         context['artist_list'] = Artist.objects.all()
+        return context
+
+
+# イラストDBデータベース
+class IllustDBTopView(generic.FormView):
+    template_name = 'D001_illust_top.html'
+    form_class = IllustTagSearchForm
+    tag_list = None
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(IllustDBTopView, self).get_context_data(**kwargs)
+
+        context['all_illust_list'] = Illust.objects.all()
+        return context
+
+    def form_valid(self, form):
+        tag_list = form.cleaned_data['tag_list']
+        self.success_url = reverse('general:illust_tag_search', kwargs={'tag_list': tag_list})
+        return super(IllustDBTopView, self).form_valid(form)
+
+
+class IllustDBRegisterView(generic.CreateView):
+    template_name = 'D002_illust_register.html'
+    form_class = IllustRegisterForm
+
+    def get_success_url(self):
+        return reverse_lazy('general:illust_detail', args=[self.object.id])
+
+
+class IllustDBDetailView(generic.DetailView):
+    template_name = 'D003_illust_detail.html'
+    model = Illust
+
+    def get_queryset(self):
+        self.queryset = Illust.objects.all()
+        return super(IllustDBDetailView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(IllustDBDetailView, self).get_context_data(**kwargs)
+        context['illust'] = self.get_object()
+        context['illust_tag_list'] = self.get_object().tags.all()
+        return context
+
+
+class IllustTagSearchView(generic.TemplateView):
+    template_name = 'D005_illust_tag_search.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(IllustTagSearchView, self).get_context_data(**kwargs)
+        tag_list = kwargs.get('tag_list').split(',')
+
+        # 検索タグにヒットしたイラストのリスト
+        for tag in tag_list:
+            hit_illust_list = Illust.objects.filter(tags__name__in=[tag])
+
+        context['hit_illust_list'] = hit_illust_list
         return context
