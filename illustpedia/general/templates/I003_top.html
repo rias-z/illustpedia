@@ -7,33 +7,39 @@
 <body>
     <h1>I002_トップ画面</h1>
 
+    <HR>
+
     [現在のログインユーザ情報]------------------<br>
-    +{{user.username}}<br>
-    +{{user.email}}<br>
-    <a href="{% url 'general:logout' %}">ログアウト</a>
+    + name [ {{user.username}} ]<br>
+    + email [ {{user.email}} ]<br>
+    + <a href="{% url 'general:account' %}">アカウントページ</a><br>
+    + <a href="{% url 'general:logout' %}">ログアウト</a>
     <br>------------------------------------------------------<br>
+
+    <HR>
+
+    <a href="{% url 'general:illust_top' %}">イラストデータベース</a>
 
     <HR>
 
     [ユーザ機能]
     <ol>
-        <li><a href="{% url 'general:account' %}">アカウントページ</a></li>
+        <li>（推薦機能１）タグ検索</li>
 
-        <li><a href="{% url 'general:artist_create' %}">作者ページを新規追加（手動）</a></li>
+            <form action="{% url 'general:top' %}" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <ul>
+                <li><button type="submit" class="form-button" name="button_1">すべて検索</button></li>
+                <li><button type="submit" class="form-button" name="button_2">推薦検索</button></li>
+                <li><button type="submit" class="form-button" name="button_3">他ユーザから推薦検索</button>
+                    他のユーザのファボ一覧から推薦検索（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
+                </ul>
+            </form>
 
-        <li>（推薦機能１）タグ検索する（ユーザのファボ一覧から推薦検索）</li>
-            <ol>
-                <form action="{% url 'general:top' %}" method="post">
-                    <li>すべて検索（推薦検索ではない）（実装まだ＊＊＊＊＊＊＊＊＊＊）</li>
-{#                    <li>他のユーザのファボ一覧から推薦検索</li>#}
-                    <li>自分のファボ一覧から推薦検索</li>
-                    {% csrf_token %}
-                    {{ form }}
-                    <button type="submit" class="form-button">タグ検索</button>
-                </form>
-            </ol>
         <br>
-        <li>（推薦機能２）あなたへのおすすめ一覧（ランキング形式で作者推薦）</li>
+
+        <li>（推薦機能２）あなたへのおすすめ一覧（ランキング形式で作者を推薦）</li>
             <ol>
                 {% for artist in dict_sort_artist_list_order_non_follow %}
                     <li>
@@ -42,6 +48,10 @@
                     </li>
                 {% endfor %}
             </ol>
+
+        <br>
+
+        <li><a href="{% url 'general:artist_create' %}">作者ページを新規追加（手動）</a></li>
     </ol>
 
     <HR>

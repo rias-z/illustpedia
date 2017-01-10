@@ -14,8 +14,18 @@ urlpatterns = [
     url(r'^artist_detail/(?P<pk>[0-9]+)/$', views.ArtistDetailView.as_view(), name="artist_detail"),
     url(r'^artist_update/(?P<pk>[0-9]+)/$', views.ArtistUpdateView.as_view(), name="artist_update"),
     url(r'^artist_create/$', views.ArtistCreateView.as_view(), name="artist_create"),
-    url(r'^tag_search/tag=(?P<tag_list>[\w,]+)/$', views.TagSearchView.as_view(), name="tag_search"),
+    url(r'^tag_search/tag_list=(?P<tag_list>[\w,]+)/is_all=(?P<is_all>[\d,]+)/$',
+        views.TagSearchView.as_view(), name="tag_search"),
+    url(r'^tag_search_from_artist/tag_num=(?P<tag_num>[\d,]+)/$',
+        views.TagSearchFromArtistView.as_view(), name="tag_search_from_artist"),
     url(r'^auto_create_from_ranking/$', views.ArtistAutoCreateFromRankingView.as_view(), name="auto_create_from_ranking"),
     url(r'^auto_create_from_follow/$', views.ArtistAutoCreateFromFollowView.as_view(), name="auto_create_from_follow"),
     url(r'^all_artist/$', views.AllArtistView.as_view(), name="all_artist"),
+
+    url(r'^illust_top/$', views.IllustDBTopView.as_view(), name="illust_top"),
+    url(r'^illust_register/$', views.IllustDBRegisterView.as_view(), name="illust_register"),
+    url(r'^illust_detail/(?P<pk>[0-9]+)/$', views.IllustDBDetailView.as_view(), name="illust_detail"),
+    url(r'^illust_tag_search/tag_list=(?P<tag_list>[\w,]+)/$', views.IllustTagSearchView.as_view(),
+        name="illust_tag_search"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

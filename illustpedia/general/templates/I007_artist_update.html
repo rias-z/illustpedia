@@ -7,6 +7,8 @@
 <body>
     <h1>I005_作者ページ編集画面</h1>
 
+    <HR>
+
     <figure>
         <img src="{{ STATIC_URL }}{{ artist.thumbnail.url }}" width="100">
     </figure>
@@ -21,5 +23,10 @@
 
         <button type="submit" class="form-button">変更する</button>
     </form>
+
+    <br>
+
+    <input type="button" value="戻る" onClick="history.back()">
+
 </body>
 </html>

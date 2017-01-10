@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import IPUser, Artist
+from .models import IPUser, Artist, Illust
 # from .models import Tag
 
 
@@ -26,9 +26,9 @@ class ArtistAdmin(admin.ModelAdmin):
 admin.site.register(Artist, ArtistAdmin)
 
 
-# class TagAdmin(admin.ModelAdmin):
-#     fieldsets = [
-#         ('tag_name', {'fields': ['tag_name']}),
-#         ('tag_num', {'fields': ['tag_num']}),
-#     ]
-# admin.site.register(Tag, TagAdmin)
+class IllustAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('tags', {'fields': ['tags']}),
+        ('image', {'fields': ['image']}),
+    ]
+admin.site.register(Illust, IllustAdmin)

@@ -9,6 +9,9 @@
 <body>
 
     <h1>I006_作者ページ詳細画面</h1>
+
+    <HR>
+
     作者のpixivID: {{ artist.artist_id }}<br>
     作者の名前: {{ artist.artist_name }}<br>
     作者のアイコン画像:<br>
@@ -19,7 +22,7 @@
         http://www.pixiv.net/member.php?id={{ artist.artist_id }}</a><br>
     作者タグ:
     {% for tag in tag_list %}
-        <li><a href="{% url 'general:tag_search' tag.name %}">{{ tag }}</a></li>
+        <li><a href="{% url 'general:tag_search_from_artist' tag.id %}">{{ tag }}</a></li>
     {% endfor %}
     {% if flag_fav %}
         [フォロー中]
