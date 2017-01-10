@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^auto_create_from_ranking/$', views.ArtistAutoCreateFromRankingView.as_view(), name="auto_create_from_ranking"),
     url(r'^auto_create_from_follow/$', views.ArtistAutoCreateFromFollowView.as_view(), name="auto_create_from_follow"),
     url(r'^all_artist/$', views.AllArtistView.as_view(), name="all_artist"),
+    url(r'^server_admin/$', views.ServerAdminView.as_view(), name="server_admin"),
 
     url(r'^illust_top/$', views.IllustDBTopView.as_view(), name="illust_top"),
     url(r'^illust_register/$', views.IllustDBRegisterView.as_view(), name="illust_register"),
