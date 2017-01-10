@@ -36,6 +36,11 @@ class ArtistUpdateForm(forms.ModelForm):
         fields = ("artist_id", "artist_name", "tags", "thumbnail")
 
 
+class PixivAccountForm(forms.Form):
+    email_or_pixivid = forms.CharField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput(), required=True)
+
+
 class IllustRegisterForm(forms.ModelForm):
     class Meta:
         model = Illust
@@ -146,6 +151,23 @@ class TopView(generic.FormView):
                 self.success_url = reverse('general:tag_search', kwargs={'tag_list': tag_list, 'is_all': 1})
 
         return super(TopView, self).form_valid(form)
+
+
+class ServerAdminView(generic.FormView):
+    template_name = 'I012_server_admin.html'
+    form_class = PixivAccountForm
+
+    def form_valid(self, form):
+
+        if self.request.method == 'POST':
+            if 'button_x' in self.request.POST:
+                print("x")
+                self.success_url = reverse('general:auto_create_from_ranking')
+            elif 'button_y' in self.request.POST:
+                print("y")
+                self.success_url = reverse('general:auto_create_from_follow')
+
+        return super(ServerAdminView, self).form_valid(form)
 
 
 class AccountView(generic.TemplateView):
@@ -341,8 +363,9 @@ class TagSearchFromArtistView(generic.TemplateView):
         return context
 
 
-class ArtistAutoCreateFromRankingView(generic.TemplateView):
+class ArtistAutoCreateFromRankingView(generic.FormView):
     template_name = 'I009_create_from_ranking.html'
+    form_class = PixivAccountForm
 
     def get_context_data(self, *args, **kwargs):
         context = super(ArtistAutoCreateFromRankingView, self).get_context_data(**kwargs)
