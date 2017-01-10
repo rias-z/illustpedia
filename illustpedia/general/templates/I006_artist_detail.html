@@ -4,12 +4,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ artist.artist_name }}のページ</title>
+    <title>illustpedia</title>
 </head>
 <body>
-
-    <h1>I006_作者ページ詳細画面</h1>
-
+    {{ artist.artist_name }}のページ
     <HR>
 
     作者のpixivID: {{ artist.artist_id }}<br>
@@ -34,7 +32,6 @@
     {% endif %}
 
     <form action="{% url 'general:artist_update' artist.id %}" method="get">
-{#            {% csrf_token %}#}
             <input type="submit" value="編集する" /><br>
     </form>
 

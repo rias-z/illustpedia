@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>作者ページ編集画面</title>
+    <title>illustpedia</title>
 </head>
 <body>
-    <h1>I005_作者ページ編集画面</h1>
-
+    {{ artist.artist_name }}を編集中
     <HR>
 
     <figure>
@@ -18,14 +17,10 @@
         <table>
             {{ form }}
         </table>
-
         <br>
-
         <button type="submit" class="form-button">変更する</button>
     </form>
-
     <br>
-
     <input type="button" value="戻る" onClick="history.back()">
 
 </body>

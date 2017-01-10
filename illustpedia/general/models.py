@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 from taggit.managers import TaggableManager
 
 
+# 管理者ユーザモデル
 class AuthUserManager(BaseUserManager):
     def create_user(self, username, email, password):
         if not username:
@@ -26,6 +27,7 @@ class AuthUserManager(BaseUserManager):
         user.save(using=self._db)
 
 
+# 作者モデル
 class Artist(models.Model):
     artist_id = models.IntegerField("作者ID", unique=True)
     artist_name = models.CharField("作者の名前", max_length=30)
@@ -37,6 +39,7 @@ class Artist(models.Model):
         return self.artist_name
 
 
+# ユーザモデル
 class IPUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField("ユーザID", unique=True, max_length=30)
     nickname = models.CharField("ニックネーム", max_length=30)
@@ -69,7 +72,7 @@ class IPUser(AbstractBaseUser, PermissionsMixin):
         return True
 
 
-# イラストDB
+# イラストモデル
 class Illust(models.Model):
     image = models.ImageField("イラスト画像", upload_to='illust/')
     tags = TaggableManager()

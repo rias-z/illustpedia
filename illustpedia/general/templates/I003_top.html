@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>トップ画面</title>
+    <title>illustpedia</title>
 </head>
 <body>
-    <h1>I002_トップ画面</h1>
-
+    トップページ
     <HR>
 
     [現在のログインユーザ情報]------------------<br>
@@ -56,9 +55,9 @@
 
     <HR>
 
-    [サーバ管理者機能]
+    [サーバ管理者機能]<br>
+    （現在すべてのユーザに閲覧可）
     <ul>
-        ((views.pyにある api.login('username', 'password') に自分のpixivアカウントのメールとパスワードを入力))
         <li><a href="{% url 'general:auto_create_from_ranking' %}">作者ページを新規追加（自動　ランキングから）</a></li>
         <li><a href="{% url 'general:auto_create_from_follow' %}">作者ページを新規追加（自動　自分のpixivフォロワーから）</a></li>
         <li><a href="{% url 'general:all_artist' %}">作者ページ一覧</a></li>
