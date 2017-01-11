@@ -22,7 +22,7 @@
     <ol>
         <li><a href="{% url 'general:illust_register' %}">イラストを新規登録</a></li>
 
-        <li>タグ検索
+        <li>タグ検索（背景　などで検索）
             <form action="{% url 'general:illust_top' %}" method="post">
                 {% csrf_token %}
                 {{ form }}

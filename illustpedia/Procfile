@@ -1,0 +1,1 @@
+web: gunicorn heroku-django-illustpedia.wsgi --log-file -

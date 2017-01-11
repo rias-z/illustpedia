@@ -372,7 +372,7 @@ class ArtistAutoCreateFromRankingView(generic.FormView):
 
         # ログイン処理
         api = PixivAPI()
-        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
+        api.login('your_pixiv_userid', 'your_pixiv_password')
 
         artist_list = []        # ランキングのすべての作者リスト
         list_all_id = []        # illustpediaに登録されているすべての作者idのリスト
@@ -457,7 +457,7 @@ class ArtistAutoCreateFromFollowView(generic.TemplateView):
 
         # ログイン処理
         api = PixivAPI()
-        api.login('sabureb0y@gmail.com', 'k0k0beanPedia')
+        api.login('your_pixiv_userid', 'your_pixiv_password')
 
         json_result = api.me_following().response
 
